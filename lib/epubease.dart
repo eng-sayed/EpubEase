@@ -64,15 +64,9 @@ class Epubease {
           context,
           MaterialPageRoute(
             builder: (context) {
-              return WillPopScope(
-                onWillPop: () async {
-                  Navigator.of(context).pop(10.0);
-                  return false;
-                },
-                child: ShowEpub(
-                  html1: htmlcontent,
-                  epubBook: epubBook,
-                ),
+              return ShowEpub(
+                html1: htmlcontent,
+                epubBook: epubBook,
               );
             },
           ),
