@@ -82,6 +82,10 @@ class Home extends State<ShowEpub> {
 
   getTitleFromXhtml(String xhtml) {
     controller.addListener(() {
+      if (wasInit) {
+        controller.jumpTo(controller.position.maxScrollExtent);
+        wasInit = false;
+      }
       if (controller.position.userScrollDirection == ScrollDirection.forward &&
           showheader == false) {
         showheader = true;
@@ -385,12 +389,12 @@ class Home extends State<ShowEpub> {
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    /*WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       if (wasInit && controller.hasClients) {
         controller.jumpTo(controller.position.maxScrollExtent);
         wasInit = false;
       }
-    });
+    }); */
     return SafeArea(
       child: WillPopScope(
           onWillPop: backpress,
