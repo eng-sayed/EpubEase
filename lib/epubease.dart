@@ -37,6 +37,7 @@ class Epubease {
             return ShowEpub(
               html1: htmlcontent,
               epubBook: epubBook,
+              initialPercent: 0,
             );
           },
         ),
@@ -44,8 +45,12 @@ class Epubease {
     });
   }
 
-  static Future<void> open(String bookurl, BuildContext context,
-      void Function(double percent) onClose) async {
+  static Future<void> open(
+    String bookurl,
+    BuildContext context, {
+    required double initialPercent,
+    required Function(double percent) onClose,
+  }) async {
     final response = await http.get(Uri.parse(bookurl));
     if (response.statusCode == 200) {
       final epubData = response.bodyBytes;
@@ -67,6 +72,7 @@ class Epubease {
               return ShowEpub(
                 html1: htmlcontent,
                 epubBook: epubBook,
+                initialPercent: initialPercent,
               );
             },
           ),

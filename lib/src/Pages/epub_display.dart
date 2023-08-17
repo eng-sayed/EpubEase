@@ -21,11 +21,13 @@ class ShowEpub extends StatefulWidget {
 
   EpubBook epubBook;
   List splithtml = [];
+  final double initialPercent;
 
   ShowEpub({
     super.key,
     required this.html1,
     required this.epubBook,
+    required this.initialPercent,
   });
   @override
   State<StatefulWidget> createState() => Home();
@@ -83,7 +85,9 @@ class Home extends State<ShowEpub> {
   getTitleFromXhtml(String xhtml) {
     controller.addListener(() {
       if (wasInit) {
-        controller.jumpTo(controller.position.maxScrollExtent);
+        controller.jumpTo(
+          controller.position.maxScrollExtent * widget.initialPercent,
+        );
         wasInit = false;
       }
       if (controller.position.userScrollDirection == ScrollDirection.forward &&
