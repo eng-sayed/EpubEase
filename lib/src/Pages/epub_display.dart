@@ -37,7 +37,7 @@ class Home extends State<ShowEpub> {
   var htmlcontent1 = '';
   bool change = false;
   bool show = false;
-  final controller = ScrollController();
+  final controller = ScrollController()..jumpTo(100);
   List<Chaptermodel> chapterslist1 = [];
   String selectedtext = '';
   String title = "";
@@ -384,8 +384,6 @@ class Home extends State<ShowEpub> {
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback(
-        (_) => controller.jumpTo(controller.position.maxScrollExtent));
     return SafeArea(
       child: WillPopScope(
           onWillPop: backpress,
