@@ -386,7 +386,7 @@ class Home extends State<ShowEpub> {
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      if (wasInit) {
+      if (wasInit && controller.hasClients) {
         controller.jumpTo(controller.position.maxScrollExtent);
         wasInit = false;
       }
