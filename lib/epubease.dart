@@ -44,7 +44,8 @@ class Epubease {
     });
   }
 
-  static Future<double?> open(String bookurl, BuildContext context) async {
+  static Future<void> open(String bookurl, BuildContext context,
+      void Function(double percent) onClose) async {
     final response = await http.get(Uri.parse(bookurl));
     if (response.statusCode == 200) {
       final epubData = response.bodyBytes;
@@ -58,25 +59,26 @@ class Epubease {
       for (var htmlFile in htmlFiles.values) {
         htmlcontent = htmlcontent + htmlFile.Content!;
       }
-
-      return await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) {
-            return WillPopScope(
-              onWillPop: () async {
-                Navigator.of(context).pop(10.0);
-                return false;
-              },
-              child: ShowEpub(
-                html1: htmlcontent,
-                epubBook: epubBook,
-              ),
-            );
-          },
-        ),
-      );
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+        final percent = await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return WillPopScope(
+                onWillPop: () async {
+                  Navigator.of(context).pop(10.0);
+                  return false;
+                },
+                child: ShowEpub(
+                  html1: htmlcontent,
+                  epubBook: epubBook,
+                ),
+              );
+            },
+          ),
+        );
+        onClose(percent);
+      });
     }
-    return null;
   }
 }
