@@ -389,12 +389,12 @@ class Home extends State<ShowEpub> {
 
   @override
   Widget build(BuildContext context) {
-    /*WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       if (wasInit && controller.hasClients) {
-        controller.jumpTo(controller.position.maxScrollExtent);
-        wasInit = false;
+        await Future.delayed(const Duration(seconds: 1));
+        controller.jumpTo(1);
       }
-    }); */
+    });
     return SafeArea(
       child: WillPopScope(
           onWillPop: backpress,
