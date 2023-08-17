@@ -37,7 +37,7 @@ class Home extends State<ShowEpub> {
   var htmlcontent1 = '';
   bool change = false;
   bool show = false;
-  final controller = ScrollController()..jumpTo(100);
+  final controller = ScrollController();
   List<Chaptermodel> chapterslist1 = [];
   String selectedtext = '';
   String title = "";
@@ -45,6 +45,7 @@ class Home extends State<ShowEpub> {
   double _fontsize = 17.0;
   bool speak = false;
   String docid = "";
+  bool wasInit = true;
 
   String fontstyle = 'Montserrat-Medium'.toString();
 
@@ -384,6 +385,12 @@ class Home extends State<ShowEpub> {
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if (wasInit) {
+        controller.jumpTo(controller.position.maxScrollExtent);
+        wasInit = false;
+      }
+    });
     return SafeArea(
       child: WillPopScope(
           onWillPop: backpress,
