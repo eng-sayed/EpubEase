@@ -1,8 +1,10 @@
+import 'dart:html';
 import 'dart:typed_data';
 
 import 'package:epubx/epubx.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/material.dart';
+import 'package:html/parser.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -170,6 +172,9 @@ class Home extends State<ShowEpub> {
   }
 
   Future<bool> backpress() async {
+    final doc = parse(htmlcontent);
+    doc.nodes;
+
     Navigator.of(context)
         .pop(controller.offset / controller.position.maxScrollExtent);
     return false;
@@ -433,8 +438,8 @@ class Home extends State<ShowEpub> {
                                     buildAsync: true,
                                     renderMode:
                                         ListViewMode(controller: controller),
-                                          factoryBuilder: () => _CustomWidgetFactory(
-                                        book: widget.epubBook), 
+                                    factoryBuilder: () => _CustomWidgetFactory(
+                                        book: widget.epubBook),
                                     onTapUrl: (String? s) async {
                                       if (s != null && s == "a") {
                                         if (s.contains("chapter")) {
