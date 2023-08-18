@@ -435,7 +435,7 @@ class Home extends State<ShowEpub> {
                                   alignment: Alignment.center,
                                   child: HtmlWidget(
                                     htmlcontent,
-                                    buildAsync: true,
+                                    buildAsync: false,
                                     renderMode:
                                         ListViewMode(controller: controller),
                                     factoryBuilder: () => _CustomWidgetFactory(
