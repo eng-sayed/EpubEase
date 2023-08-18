@@ -175,7 +175,8 @@ class Home extends State<ShowEpub> {
     Navigator.of(context)
         .pop(controller.offset / controller.position.maxScrollExtent);
 
-    final words = countWordsBefore(epubBook.Chapters ?? [], selectedchapter);
+    final words = WordsCounter()
+        .countWordsBefore(epubBook.Chapters ?? [], selectedchapter);
     return false;
   }
 
