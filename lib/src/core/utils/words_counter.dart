@@ -17,13 +17,21 @@ int countWordsBefore(List<EpubChapter> chapters, String selectedchapter) {
 
 int countWordsInChapter(EpubChapter chapter) {
   final doc = parse(chapter.HtmlContent);
-  return getWordCountsInNodeList(doc.querySelectorAll('*'));
+  return getWordCountsInNodeList(doc.nodes);
 }
 
-int getWordCountsInNodeList(List<Element> nodeList) {
+int getWordCountsInNode(Node node) {
+  var wordCount = node.text?.trim().split(' ').length ?? 0;
+  if (node.nodes.isNotEmpty) {
+    wordCount += getWordCountsInNodeList(node.nodes);
+  }
+  return wordCount;
+}
+
+int getWordCountsInNodeList(NodeList nodeList) {
   var wordCount = 0;
   for (var i = 0; i < nodeList.length; i++) {
-    wordCount += nodeList[i].text.trim().split(' ').length;
+    wordCount += getWordCountsInNode(nodeList[i]);
   }
   return wordCount;
 }
