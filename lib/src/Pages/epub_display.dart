@@ -689,9 +689,8 @@ class _CustomWidgetFactory extends WidgetFactory {
   Widget? buildImage(BuildMetadata meta, ImageMetadata img) {
     if (meta.element.attributes.containsKey('src')) {
       // "../images/cover.jpg";
-      String source = meta.element.attributes['src'] as String;
 
-      final imageKey = getKeyFromSource(source);
+      final imageKey = meta.element.attributes['src'] as String;
       final bytes = getImageBytesByKey(imageKey);
 
       if (bytes != null) {
@@ -704,25 +703,15 @@ class _CustomWidgetFactory extends WidgetFactory {
   }
 
   Uint8List? getImageBytesByKey(String imageKey) {
-    if (book.Content?.Images?.containsKey(imageKey) ?? false) {
-      final file = book.Content!.Images![imageKey] as EpubByteContentFile;
+    final entry = book.Content?.Images?.entries
+        .firstWhere((entry) => imageKey.contains(entry.key));
+    if (entry != null) {
+      final file = entry.value;
       if (file.Content != null) {
         return Uint8List.fromList(file.Content!);
       }
     }
-    return null;
-  }
 
-  String getKeyFromSource(String source) {
-    var i = 0;
-    while (source[i] == '.') {
-      i++;
-    }
-    source = source.substring(i);
-    final imageKey = source
-        .split('/')
-        .skip(1)
-        .fold("", (previousValue, element) => previousValue + element);
-    return imageKey;
+    return null;
   }
 }
