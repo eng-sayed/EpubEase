@@ -693,6 +693,37 @@ class Home extends State<ShowEpub> {
 // ignore: must_be_immutable
 
 class _CustomWidgetFactory extends WidgetFactory {
+
+  @override
+  Widget? buildImageWidget(BuildMetadata meta, ImageSource src) {
+    // TODO: implement buildImageWidget
+    return super.buildImageWidget(meta, src);
+  }
+
+  @override
+  ImageProvider<Object>? imageProviderFromDataUri(String dataUri) {
+    // TODO: implement imageProviderFromDataUri
+    return super.imageProviderFromDataUri(dataUri);
+  }
+
+  @override
+  ImageProvider<Object>? imageProviderFromFileUri(String url) {
+    // TODO: implement imageProviderFromFileUri
+    return super.imageProviderFromFileUri(url);
+  }
+
+  @override
+  ImageProvider<Object>? imageProviderFromAsset(String url) {
+    // TODO: implement imageProviderFromAsset
+    return super.imageProviderFromAsset(url);
+  }
+
+  @override
+  ImageProvider<Object>? imageProviderFromNetwork(String url) {
+    // TODO: implement imageProviderFromNetwork
+    return super.imageProviderFromNetwork(url);
+  }
+
   @override
   Widget? buildImage(BuildMetadata meta, ImageMetadata img) {
     if (img.sources.isNotEmpty) {
@@ -704,6 +735,8 @@ class _CustomWidgetFactory extends WidgetFactory {
     }
     return super.buildImage(meta, img);
   }
+
+
 }
 
 
