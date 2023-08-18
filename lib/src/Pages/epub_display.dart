@@ -433,8 +433,8 @@ class Home extends State<ShowEpub> {
                                     buildAsync: true,
                                     renderMode:
                                         ListViewMode(controller: controller),
-                                    factoryBuilder: () => _CustomWidgetFactory(
-                                        book: widget.epubBook),
+                                    /*      factoryBuilder: () => _CustomWidgetFactory(
+                                        book: widget.epubBook), */
                                     onTapUrl: (String? s) async {
                                       if (s != null && s == "a") {
                                         if (s.contains("chapter")) {
