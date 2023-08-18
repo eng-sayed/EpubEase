@@ -4,6 +4,7 @@ import 'dart:async';
 
 import 'package:epubx/epubx.dart';
 import 'package:flutter/material.dart';
+import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/services.dart' show rootBundle;
@@ -64,6 +65,7 @@ class Epubease {
       for (var htmlFile in htmlFiles.values) {
         htmlcontent = htmlcontent + htmlFile.Content!;
       }
+
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
         final percent = await Navigator.push(
           context,
@@ -81,6 +83,4 @@ class Epubease {
       });
     }
   }
-
-
 }
