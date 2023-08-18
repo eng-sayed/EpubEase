@@ -424,46 +424,41 @@ class Home extends State<ShowEpub> {
                                 horizontal: 5, vertical: 10),
                             child: Scrollbar(
                               controller: controller,
-                              child: SingleChildScrollView(
-                                controller: controller,
-                                child: Container(
-                                    padding: const EdgeInsets.only(
-                                        left: 8, right: 3, top: 50),
-                                    alignment: Alignment.center,
-                                    child: Expanded(
-                                      child: HtmlWidget(
-                                        htmlcontent,
-                                        buildAsync: true,
-                                        renderMode: RenderMode.listView,
-                                        factoryBuilder: () =>
-                                            _CustomWidgetFactory(
-                                                book: widget.epubBook),
-                                        onTapUrl: (String? s) async {
-                                          if (s != null && s == "a") {
-                                            if (s.contains("chapter")) {
-                                              setState(() {
-                                                var s1 = s.split("-0");
-                                                String break1 = s1
-                                                    .toList()
-                                                    .last
-                                                    .split(".xhtml")
-                                                    .first;
-                                                int number = int.parse(break1);
-                                                selectedchapter = s1.first +
-                                                    number.toString();
-                                                updatecontent1();
-                                              });
-                                            }
-                                          }
-                                          return true;
-                                        },
-                                        textStyle: TextStyle(
-                                            fontSize: _fontsize,
-                                            fontFamily: selectedTextStyle,
-                                            color: fontc),
-                                      ),
-                                    )),
-                              ),
+                              child: Container(
+                                  padding: const EdgeInsets.only(
+                                      left: 8, right: 3, top: 50),
+                                  alignment: Alignment.center,
+                                  child: HtmlWidget(
+                                    htmlcontent,
+                                    buildAsync: true,
+                                    renderMode:
+                                        ListViewMode(controller: controller),
+                                    factoryBuilder: () => _CustomWidgetFactory(
+                                        book: widget.epubBook),
+                                    onTapUrl: (String? s) async {
+                                      if (s != null && s == "a") {
+                                        if (s.contains("chapter")) {
+                                          setState(() {
+                                            var s1 = s.split("-0");
+                                            String break1 = s1
+                                                .toList()
+                                                .last
+                                                .split(".xhtml")
+                                                .first;
+                                            int number = int.parse(break1);
+                                            selectedchapter =
+                                                s1.first + number.toString();
+                                            updatecontent1();
+                                          });
+                                        }
+                                      }
+                                      return true;
+                                    },
+                                    textStyle: TextStyle(
+                                        fontSize: _fontsize,
+                                        fontFamily: selectedTextStyle,
+                                        color: fontc),
+                                  )),
                             ),
                           ),
                           //)
