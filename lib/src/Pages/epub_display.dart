@@ -81,9 +81,7 @@ class Home extends State<ShowEpub> {
     allFonts = GoogleFonts.asMap().cast<String, String>();
     fontNames = allFonts.keys.toList();
     selectedFont = 'Abyssinica SIL';
-    selectedTextStyle = GoogleFonts
-        .getFont(selectedFont)
-        .fontFamily!;
+    selectedTextStyle = GoogleFonts.getFont(selectedFont).fontFamily!;
 
     getTitleFromXhtml(widget.html1);
     super.initState();
@@ -102,7 +100,7 @@ class Home extends State<ShowEpub> {
         showheader = true;
         setState(() {});
       } else if (controller.position.userScrollDirection ==
-          ScrollDirection.reverse &&
+              ScrollDirection.reverse &&
           showheader) {
         showheader = false;
         setState(() {});
@@ -197,8 +195,7 @@ class Home extends State<ShowEpub> {
         builder: (context) {
           return SingleChildScrollView(
               child: StatefulBuilder(
-                  builder: (BuildContext context, setState) =>
-                      SizedBox(
+                  builder: (BuildContext context, setState) => SizedBox(
                         height: 170,
                         child: Column(
                           children: [
@@ -284,52 +281,50 @@ class Home extends State<ShowEpub> {
                                     children: [
                                       StatefulBuilder(
                                         builder: (BuildContext context,
-                                            StateSetter setState) =>
+                                                StateSetter setState) =>
                                             Theme(
-                                              data: Theme.of(context)
-                                                  .copyWith(canvasColor: bag),
-                                              child: DropdownButtonHideUnderline(
-                                                child: DropdownButton<String>(
-                                                    value: selectedFont,
-                                                    isExpanded: true,
-                                                    menuMaxHeight: 400,
-                                                    onChanged: (newValue) {
-                                                      selectedFont = newValue!;
-                                                      selectedTextStyle =
-                                                      GoogleFonts
-                                                          .getFont(
-                                                          selectedFont)
+                                          data: Theme.of(context)
+                                              .copyWith(canvasColor: bag),
+                                          child: DropdownButtonHideUnderline(
+                                            child: DropdownButton<String>(
+                                                value: selectedFont,
+                                                isExpanded: true,
+                                                menuMaxHeight: 400,
+                                                onChanged: (newValue) {
+                                                  selectedFont = newValue!;
+                                                  selectedTextStyle =
+                                                      GoogleFonts.getFont(
+                                                              selectedFont)
                                                           .fontFamily!;
 
-                                                      setState(() {});
-                                                      update();
-                                                    },
-                                                    items: fontNames.map<
-                                                        DropdownMenuItem<
-                                                            String>>((
-                                                        String font) {
-                                                      return DropdownMenuItem<
-                                                          String>(
-                                                        value: font,
-                                                        child: Text(font,
-                                                            style: TextStyle(
-                                                                color:
+                                                  setState(() {});
+                                                  update();
+                                                },
+                                                items: fontNames.map<
+                                                    DropdownMenuItem<
+                                                        String>>((String font) {
+                                                  return DropdownMenuItem<
+                                                      String>(
+                                                    value: font,
+                                                    child: Text(font,
+                                                        style: TextStyle(
+                                                            color:
                                                                 selectedFont ==
-                                                                    font
+                                                                        font
                                                                     ? const Color(
-                                                                    0xffcc2b73)
+                                                                        0xffcc2b73)
                                                                     : fontc,
-                                                                fontWeight:
+                                                            fontWeight:
                                                                 selectedFont ==
-                                                                    font
+                                                                        font
                                                                     ? FontWeight
-                                                                    .bold
+                                                                        .bold
                                                                     : FontWeight
-                                                                    .normal)),
-                                                      );
-                                                    }).toList()),
-                                              ),
-                                            ),
+                                                                        .normal)),
+                                                  );
+                                                }).toList()),
+                                          ),
+                                        ),
                                       ),
                                       Row(
                                         children: [
@@ -416,135 +411,127 @@ class Home extends State<ShowEpub> {
         child: Scaffold(
           body: Container(
               color: bag,
-              height: MediaQuery
-                  .of(context)
-                  .size
-                  .height,
+              height: MediaQuery.of(context).size.height,
               child: Stack(
                 children: [
                   Column(
                     children: [
                       Expanded(
                           child: Stack(
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 5, vertical: 10),
-                                child: Scrollbar(
-                                  controller: controller,
-                                  child: SingleChildScrollView(
-                                    controller: controller,
-                                    child: Container(
-                                        padding: const EdgeInsets.only(
-                                            left: 8, right: 3, top: 50),
-                                        alignment: Alignment.center,
-                                        child: HtmlWidget(
-                                          htmlcontent,
-                                          factoryBuilder: () =>
-                                              _CustomWidgetFactory(),
-                                          onTapUrl: (String? s) async {
-                                            if (s != null && s == "a") {
-                                              if (s.contains("chapter")) {
-                                                setState(() {
-                                                  var s1 = s.split("-0");
-                                                  String break1 = s1
-                                                      .toList()
-                                                      .last
-                                                      .split(".xhtml")
-                                                      .first;
-                                                  int number = int.parse(
-                                                      break1);
-                                                  selectedchapter =
-                                                      s1.first +
-                                                          number.toString();
-                                                  updatecontent1();
-                                                });
-                                              }
-                                            }
-                                            return true;
-                                          },
-                                          textStyle: TextStyle(
-                                              fontSize: _fontsize,
-                                              fontFamily: selectedTextStyle,
-                                              color: fontc),
-                                        )),
-                                  ),
-                                ),
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 5, vertical: 10),
+                            child: Scrollbar(
+                              controller: controller,
+                              child: SingleChildScrollView(
+                                controller: controller,
+                                child: Container(
+                                    padding: const EdgeInsets.only(
+                                        left: 8, right: 3, top: 50),
+                                    alignment: Alignment.center,
+                                    child: HtmlWidget(
+                                      htmlcontent,
+                                      factoryBuilder: () =>
+                                          _CustomWidgetFactory(
+                                              book: widget.epubBook),
+                                      onTapUrl: (String? s) async {
+                                        if (s != null && s == "a") {
+                                          if (s.contains("chapter")) {
+                                            setState(() {
+                                              var s1 = s.split("-0");
+                                              String break1 = s1
+                                                  .toList()
+                                                  .last
+                                                  .split(".xhtml")
+                                                  .first;
+                                              int number = int.parse(break1);
+                                              selectedchapter =
+                                                  s1.first + number.toString();
+                                              updatecontent1();
+                                            });
+                                          }
+                                        }
+                                        return true;
+                                      },
+                                      textStyle: TextStyle(
+                                          fontSize: _fontsize,
+                                          fontFamily: selectedTextStyle,
+                                          color: fontc),
+                                    )),
                               ),
-                              //)
+                            ),
+                          ),
+                          //)
 
-                              Align(
-                                alignment: Alignment.bottomRight,
-                                child: Visibility(
-                                  visible: show,
-                                  child: Container(
-                                      height: 150,
-                                      width: 30,
-                                      alignment: Alignment.bottomCenter,
-                                      margin: const EdgeInsets.only(
-                                          bottom: 40, right: 15),
-                                      child: Column(
-                                        children: [
-                                          Icon(
-                                            Icons.brightness_7,
-                                            size: 15,
-                                            color: fontc,
-                                          ),
-                                          SizedBox(
-                                            height: 120,
-                                            width: 30,
-                                            child: RotatedBox(
-                                                quarterTurns: -1,
-                                                child: SliderTheme(
-                                                    data: SliderThemeData(
-                                                      activeTrackColor: themeid ==
-                                                          4
-                                                          ? Colors.white
-                                                          : Colors.blue,
-                                                      disabledThumbColor:
+                          Align(
+                            alignment: Alignment.bottomRight,
+                            child: Visibility(
+                              visible: show,
+                              child: Container(
+                                  height: 150,
+                                  width: 30,
+                                  alignment: Alignment.bottomCenter,
+                                  margin: const EdgeInsets.only(
+                                      bottom: 40, right: 15),
+                                  child: Column(
+                                    children: [
+                                      Icon(
+                                        Icons.brightness_7,
+                                        size: 15,
+                                        color: fontc,
+                                      ),
+                                      SizedBox(
+                                        height: 120,
+                                        width: 30,
+                                        child: RotatedBox(
+                                            quarterTurns: -1,
+                                            child: SliderTheme(
+                                                data: SliderThemeData(
+                                                  activeTrackColor: themeid == 4
+                                                      ? Colors.white
+                                                      : Colors.blue,
+                                                  disabledThumbColor:
                                                       Colors.transparent,
-                                                      inactiveTrackColor: Colors
-                                                          .grey
-                                                          .withOpacity(0.5),
-                                                      trackHeight: 5.0,
+                                                  inactiveTrackColor: Colors
+                                                      .grey
+                                                      .withOpacity(0.5),
+                                                  trackHeight: 5.0,
 
-                                                      thumbColor: themeid == 4
-                                                          ? Colors.grey
+                                                  thumbColor: themeid == 4
+                                                      ? Colors.grey
                                                           .withOpacity(0.8)
-                                                          : Colors.blue,
-                                                      thumbShape:
+                                                      : Colors.blue,
+                                                  thumbShape:
                                                       const RoundSliderThumbShape(
                                                           enabledThumbRadius:
-                                                          0.0),
-                                                      // Adjust the size of the thumb
-                                                      overlayShape:
+                                                              0.0),
+                                                  // Adjust the size of the thumb
+                                                  overlayShape:
                                                       const RoundSliderOverlayShape(
                                                           overlayRadius:
-                                                          10.0), // Adjust the size of the overlay
-                                                    ),
-                                                    child: Slider(
-                                                      value: brightnessLevel,
-                                                      min: 0.0,
-                                                      max: 1.0,
-                                                      onChangeEnd: (
-                                                          double value) {
-                                                        setBrightness(value);
-                                                      },
-                                                      onChanged: (
-                                                          double value) {
-                                                        setState(() {
-                                                          brightnessLevel =
-                                                              value;
-                                                        });
-                                                      },
-                                                    ))),
-                                          ),
-                                        ],
-                                      )),
-                                ),
-                              )
-                            ],
-                          )),
+                                                              10.0), // Adjust the size of the overlay
+                                                ),
+                                                child: Slider(
+                                                  value: brightnessLevel,
+                                                  min: 0.0,
+                                                  max: 1.0,
+                                                  onChangeEnd: (double value) {
+                                                    setBrightness(value);
+                                                  },
+                                                  onChanged: (double value) {
+                                                    setState(() {
+                                                      brightnessLevel = value;
+                                                    });
+                                                  },
+                                                ))),
+                                      ),
+                                    ],
+                                  )),
+                            ),
+                          )
+                        ],
+                      )),
                       if (selectedchapter.isNotEmpty) ...[
                         Container(
                           height: 35,
@@ -557,8 +544,8 @@ class Home extends State<ShowEpub> {
                                 child: IconButton(
                                     onPressed: () {
                                       int index = chapterslist1.indexWhere(
-                                              (element) =>
-                                          element.chapter ==
+                                          (element) =>
+                                              element.chapter ==
                                               selectedchapter);
                                       if (index != 0) {
                                         selectedchapter =
@@ -590,8 +577,8 @@ class Home extends State<ShowEpub> {
                                   child: IconButton(
                                       onPressed: () {
                                         int index = chapterslist1.indexWhere(
-                                                (element) =>
-                                            element.chapter ==
+                                            (element) =>
+                                                element.chapter ==
                                                 selectedchapter);
                                         if (index != chapterslist1.length - 1) {
                                           selectedchapter =
@@ -627,12 +614,13 @@ class Home extends State<ShowEpub> {
                       elevation: 0,
                       leading: IconButton(
                         onPressed: () async {
-                          bool updatecontent = await Navigator.of(context)
-                              .push(MaterialPageRoute(
-                              builder: (context) =>
-                                  ChaptersList(
-                                    chapters: chapterslist1,
-                                  )));
+                          bool updatecontent = await Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => ChaptersList(
+                                chapters: chapterslist1,
+                              ),
+                            ),
+                          );
                           if (updatecontent) {
                             updatecontent1();
                           }
@@ -693,50 +681,34 @@ class Home extends State<ShowEpub> {
 // ignore: must_be_immutable
 
 class _CustomWidgetFactory extends WidgetFactory {
+  final EpubBook book;
 
-  @override
-  Widget? buildImageWidget(BuildMetadata meta, ImageSource src) {
-    // TODO: implement buildImageWidget
-    return super.buildImageWidget(meta, src);
-  }
-
-  @override
-  ImageProvider<Object>? imageProviderFromDataUri(String dataUri) {
-    // TODO: implement imageProviderFromDataUri
-    return super.imageProviderFromDataUri(dataUri);
-  }
-
-  @override
-  ImageProvider<Object>? imageProviderFromFileUri(String url) {
-    // TODO: implement imageProviderFromFileUri
-    return super.imageProviderFromFileUri(url);
-  }
-
-  @override
-  ImageProvider<Object>? imageProviderFromAsset(String url) {
-    // TODO: implement imageProviderFromAsset
-    return super.imageProviderFromAsset(url);
-  }
-
-  @override
-  ImageProvider<Object>? imageProviderFromNetwork(String url) {
-    // TODO: implement imageProviderFromNetwork
-    return super.imageProviderFromNetwork(url);
-  }
+  _CustomWidgetFactory({required this.book});
 
   @override
   Widget? buildImage(BuildMetadata meta, ImageMetadata img) {
-    if (img.sources.isNotEmpty) {
-      // Get the first image source (assuming there's only one source per image)
-      final imageUrl = img.sources.first;
+    if (meta.element.attributes.containsKey('src')) {
+      // "../images/cover.jpg";
+      final String source = meta.element.attributes['src'] as String;
+      final imageKey = source.substring(3);
+      final bytes = getImageBytesByKey(imageKey);
 
-      // Replace the <img> tag with your custom widget or content
-      return HtmlImage(bytes: Uint8List.fromList([]),);
+      if (bytes != null) {
+        return HtmlImage(
+          bytes: bytes,
+        );
+      }
     }
     return super.buildImage(meta, img);
   }
 
-
+  Uint8List? getImageBytesByKey(String imageKey) {
+    if (book.Content?.Images?.containsKey(imageKey) ?? false) {
+      final file = book.Content!.Images![imageKey] as EpubByteContentFile;
+      if (file.Content != null) {
+        return Uint8List.fromList(file.Content!);
+      }
+    }
+    return null;
+  }
 }
-
-
