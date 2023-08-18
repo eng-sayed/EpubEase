@@ -17,7 +17,7 @@ int countWordsBefore(List<EpubChapter> chapters, String selectedchapter) {
 
 int countWordsInChapter(EpubChapter chapter) {
   final doc = parse(chapter.HtmlContent);
-  return getWordCountsInNodeList(doc.querySelectorAll('p'));
+  return getWordCountsInNodeList(doc.querySelectorAll('*'));
 }
 
 int getWordCountsInNodeList(List<Element> nodeList) {
