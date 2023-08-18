@@ -130,6 +130,30 @@ class Home extends State<ShowEpub> {
     });
   }
 
+  int countWordsBefore() {
+    final chapters = epubBook.Chapters ?? [];
+    var wordsBefore = 0;
+    for (int i = 0; i < chapters.length; i++) {
+      final chapter = chapters[i];
+      if ((chapter.Title ?? "").toLowerCase() ==
+          selectedchapter.toLowerCase()) {
+        break;
+      } else {
+        wordsBefore += countWordsInChapter(chapter);
+      }
+    }
+    return wordsBefore;
+  }
+
+  int countWordsInChapter(EpubChapter chapter) {
+    final doc = parse(chapter.HtmlContent);
+    var currentWordsCount = 0;
+    for (var node in doc.nodes) {
+      currentWordsCount += node.text?.length ?? 0;
+    }
+    return currentWordsCount;
+  }
+
   updatecontent1() async {
     String content = '';
 
@@ -171,11 +195,10 @@ class Home extends State<ShowEpub> {
   }
 
   Future<bool> backpress() async {
-    final doc = parse(htmlcontent);
-    doc.nodes;
-
     Navigator.of(context)
         .pop(controller.offset / controller.position.maxScrollExtent);
+
+    final words = countWordsBefore();
     return false;
   }
 
