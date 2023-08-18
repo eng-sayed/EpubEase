@@ -689,8 +689,9 @@ class _CustomWidgetFactory extends WidgetFactory {
   Widget? buildImage(BuildMetadata meta, ImageMetadata img) {
     if (meta.element.attributes.containsKey('src')) {
       // "../images/cover.jpg";
-      final String source = meta.element.attributes['src'] as String;
-      final imageKey = source.substring(3);
+      String source = meta.element.attributes['src'] as String;
+
+      final imageKey = getKeyFromSource(source);
       final bytes = getImageBytesByKey(imageKey);
 
       if (bytes != null) {
@@ -710,5 +711,18 @@ class _CustomWidgetFactory extends WidgetFactory {
       }
     }
     return null;
+  }
+
+  String getKeyFromSource(String source) {
+    var i = 0;
+    while (source[i] == '.') {
+      i++;
+    }
+    source = source.substring(i);
+    final imageKey = source
+        .split('/')
+        .skip(1)
+        .fold("", (previousValue, element) => previousValue + element);
+    return imageKey;
   }
 }
