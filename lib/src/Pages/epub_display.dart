@@ -588,8 +588,16 @@ class Home extends State<ShowEpub> {
                                               element.chapter ==
                                               selectedchapter);
                                       if (index != 0) {
-                                        selectedchapter =
-                                            chapterslist1[index - 1].chapter;
+                                        if (index - 2 >= 0 &&
+                                            chapterslist1[index - 2]
+                                                .subChapters
+                                                .isNotEmpty) {
+                                          selectedchapter =
+                                              chapterslist1[index - 2].chapter;
+                                        } else {
+                                          selectedchapter =
+                                              chapterslist1[index - 1].chapter;
+                                        }
                                         updatecontent1();
                                       }
                                     },
@@ -621,8 +629,19 @@ class Home extends State<ShowEpub> {
                                                 element.chapter ==
                                                 selectedchapter);
                                         if (index != chapterslist1.length - 1) {
-                                          selectedchapter =
-                                              chapterslist1[index + 1].chapter;
+                                          if (index + 2 <
+                                                  chapterslist1.length &&
+                                              chapterslist1[index]
+                                                  .subChapters
+                                                  .isNotEmpty) {
+                                            selectedchapter =
+                                                chapterslist1[index + 2]
+                                                    .chapter;
+                                          } else {
+                                            selectedchapter =
+                                                chapterslist1[index + 1]
+                                                    .chapter;
+                                          }
                                           updatecontent1();
                                         }
                                       },
