@@ -129,7 +129,7 @@ class Home extends State<ShowEpub> {
   showchapter() async {
     epubBook.Chapters?.forEach((EpubChapter chapter) {
       String? chapterTitle = chapter.Title;
-      selectedchapter = '';
+
       List<Chaptermodel> subChapters = [];
       for (var element in chapter.SubChapters!) {
         subChapters.add(
