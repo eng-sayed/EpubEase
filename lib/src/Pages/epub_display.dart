@@ -84,9 +84,19 @@ class Home extends State<ShowEpub> {
     fontNames = allFonts.keys.toList();
     selectedFont = 'Abyssinica SIL';
     selectedTextStyle = GoogleFonts.getFont(selectedFont).fontFamily!;
+    selectedchapter = getFirstChapter();
+    selectedchapter = getTitleFromXhtml(widget.html1);
 
-    getTitleFromXhtml(widget.html1);
     super.initState();
+  }
+
+  String getFirstChapter() {
+    if (epubBook.Chapters?.isNotEmpty ?? false) {
+      final first = epubBook.Chapters!.first;
+      final firstSub = first.SubChapters?.first.Title ?? first.Title;
+      return firstSub ?? "";
+    }
+    return "";
   }
 
   getTitleFromXhtml(String xhtml) {
@@ -151,7 +161,7 @@ class Home extends State<ShowEpub> {
         content = chapter.HtmlContent!;
         List<EpubChapter>? subChapters = chapter.SubChapters;
         if (subChapters != null && subChapters.isNotEmpty) {
-          for (int i = 0; i < subChapters.length; i++) {
+          for (int i = 0; i < 1; i++) {
             content = content + subChapters[i].HtmlContent!;
           }
         }
@@ -653,20 +663,21 @@ class Home extends State<ShowEpub> {
                       ),
                       actions: [
                         InkWell(
-                            onTap: () {
-                              updatefontsettings();
-                            },
-                            child: Container(
-                              width: 40,
-                              alignment: Alignment.center,
-                              child: Text(
-                                "Aa",
-                                style: TextStyle(
-                                    fontSize: 20,
-                                    color: fontc,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            )),
+                          onTap: () {
+                            updatefontsettings();
+                          },
+                          child: Container(
+                            width: 40,
+                            alignment: Alignment.center,
+                            child: Text(
+                              "Aa",
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  color: fontc,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
                         const SizedBox(
                           width: 5,
                         ),

@@ -43,11 +43,8 @@ class ChaptersList extends StatelessWidget {
                 children: [
                   ListTile(
                     onTap: () {
-                      if (chapters[i].subChapters.isNotEmpty) {
-                        selectedchapter = chapters[i].subChapters.first.chapter;
-                      } else {
-                        selectedchapter = chapters[i].chapter;
-                      }
+                      selectedchapter = chapters[i].chapter;
+
                       Navigator.of(context).pop(true);
                     },
                     title: Padding(
