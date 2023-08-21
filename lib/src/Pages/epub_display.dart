@@ -430,7 +430,7 @@ class Home extends State<ShowEpub> {
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      if (wasInit && controller.hasClients) {
+      if (wasInit && controller.hasListeners) {
         await Future.delayed(const Duration(seconds: 1));
         if (wasInit) {
           controller.jumpTo(
