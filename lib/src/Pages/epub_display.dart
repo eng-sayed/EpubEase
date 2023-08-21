@@ -85,7 +85,7 @@ class Home extends State<ShowEpub> {
     selectedFont = 'Abyssinica SIL';
     selectedTextStyle = GoogleFonts.getFont(selectedFont).fontFamily!;
     selectedchapter = getFirstChapter();
-    selectedchapter = getTitleFromXhtml(widget.html1);
+    getTitleFromXhtml(widget.html1);
 
     super.initState();
   }
