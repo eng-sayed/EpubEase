@@ -1,3 +1,4 @@
+import 'package:epubease/src/core/utils/count_result.dart';
 import 'package:epubx/epubx.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart';
@@ -5,39 +6,38 @@ import 'package:html/parser.dart';
 class WordsCounter {
   var wasChapterFound = false;
   WordsCounter();
-  int countWordsBefore(List<EpubChapter> chapters, String selectedchapter) {
+  CountResult countWordsBefore(
+      List<EpubChapter> chapters, String selectedchapter) {
     var wordsBefore = 0;
+    int wordsInChapter = 0;
     for (int i = 0; i < chapters.length; i++) {
       final chapter = chapters[i];
       if ((chapter.Title ?? "").toLowerCase() ==
           selectedchapter.toLowerCase()) {
         wasChapterFound = true;
+        wordsInChapter = countWordsInChapter(chapter);
         break;
       } else {
         wordsBefore += countWordsInChapter(chapter);
-        wordsBefore +=
+        final wordsInSubChapters =
             countWordsBefore(chapter.SubChapters ?? [], selectedchapter);
+        wordsBefore += wordsInSubChapters.symbolsBefore;
+        wordsInChapter = wordsInSubChapters.symbolsInCurrent;
+
         if (wasChapterFound) {
           break;
         }
       }
     }
-    return wordsBefore;
+    return CountResult(
+      symbolsBefore: wordsBefore,
+      symbolsInCurrent: wordsInChapter,
+    );
   }
 
   int countWordsInChapter(EpubChapter chapter) {
-    var htmlChapter = chapter.HtmlContent;
-
     final doc = parse(chapter.HtmlContent);
     return getWordCountsInNodeList(doc.nodes);
-  }
-
-  String getChapterHtml(EpubChapter chapter) {
-    var htmlChapter = chapter.HtmlContent ?? "";
-    for (var element in chapter.SubChapters ?? []) {
-      htmlChapter = htmlChapter + getChapterHtml(element);
-    }
-    return htmlChapter;
   }
 
   int getWordCountsInNode(Node node) {

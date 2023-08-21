@@ -122,11 +122,21 @@ class Home extends State<ShowEpub> {
       selectedchapter = '';
       List<Chaptermodel> subChapters = [];
       for (var element in chapter.SubChapters!) {
-        subChapters
-            .add(Chaptermodel(chapter: element.Title!, issubchapter: true));
+        subChapters.add(
+          Chaptermodel(
+            chapter: element.Title!,
+            issubchapter: true,
+            subChapters: element.SubChapters.toChapterModels(),
+          ),
+        );
       }
-      chapterslist1
-          .add(Chaptermodel(chapter: chapterTitle!, issubchapter: false));
+      chapterslist1.add(
+        Chaptermodel(
+          chapter: chapterTitle!,
+          issubchapter: false,
+          subChapters: chapter.SubChapters.toChapterModels(),
+        ),
+      );
       chapterslist1 += subChapters;
     });
   }
@@ -172,11 +182,18 @@ class Home extends State<ShowEpub> {
   }
 
   Future<bool> backpress() async {
-    Navigator.of(context)
-        .pop(controller.offset / controller.position.maxScrollExtent);
+    final currentChapterPercent =
+        controller.offset / controller.position.maxScrollExtent;
 
-    final words = WordsCounter()
+    final wordsResult = WordsCounter()
         .countWordsBefore(epubBook.Chapters ?? [], selectedchapter);
+    final allResult = WordsCounter()
+        .countWordsBefore(epubBook.Chapters ?? [], "sdvsmkvmksmdcs");
+    final currentChapterProgress =
+        currentChapterPercent * wordsResult.symbolsInCurrent;
+    final progress = (wordsResult.symbolsBefore + currentChapterProgress) /
+        allResult.symbolsBefore;
+    Navigator.of(context).pop(progress);
     return false;
   }
 
