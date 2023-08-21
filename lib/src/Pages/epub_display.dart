@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:epubease/src/Model/last_place_model.dart';
 import 'package:epubease/src/core/utils/words_counter.dart';
 import 'package:epubx/epubx.dart';
 import 'package:flutter/rendering.dart';
@@ -26,13 +27,13 @@ class ShowEpub extends StatefulWidget {
 
   EpubBook epubBook;
   List splithtml = [];
-  final double initialPercent;
+  final LastPlaceModel lastPlace;
 
   ShowEpub({
     super.key,
     required this.html1,
     required this.epubBook,
-    required this.initialPercent,
+    required this.lastPlace,
   });
 
   @override
@@ -84,15 +85,17 @@ class Home extends State<ShowEpub> {
     fontNames = allFonts.keys.toList();
     selectedFont = 'Abyssinica SIL';
     selectedTextStyle = GoogleFonts.getFont(selectedFont).fontFamily!;
-    selectedchapter = getFirstChapter();
+    selectedchapter = getLastChapter();
     getTitleFromXhtml(widget.html1);
     updatecontent1();
 
     super.initState();
   }
 
-  String getFirstChapter() {
-    if (epubBook.Chapters?.isNotEmpty ?? false) {
+  String getLastChapter() {
+    if (widget.lastPlace.lastChapter?.isNotEmpty ?? false) {
+      return widget.lastPlace.lastChapter ?? "";
+    } else if (epubBook.Chapters?.isNotEmpty ?? false) {
       final first = epubBook.Chapters!.first;
 
       return first.Title ?? "";
@@ -104,7 +107,8 @@ class Home extends State<ShowEpub> {
     controller.addListener(() {
       if (wasInit) {
         controller.jumpTo(
-          controller.position.maxScrollExtent * widget.initialPercent,
+          controller.position.maxScrollExtent *
+              (widget.lastPlace.chapterPercent ?? 0),
         );
         wasInit = false;
       }

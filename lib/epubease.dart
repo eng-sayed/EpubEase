@@ -2,6 +2,7 @@ library epubease;
 
 import 'dart:async';
 
+import 'package:epubease/src/Model/last_place_model.dart';
 import 'package:epubx/epubx.dart';
 import 'package:flutter/material.dart';
 import 'package:html/parser.dart';
@@ -18,7 +19,12 @@ class Epubease {
   static final GlobalKey<NavigatorState> navigatorKey =
       GlobalKey<NavigatorState>();
 
-  static Future<void> openAsset(String assetpath, BuildContext context) async {
+  static Future<void> openAsset(
+    String assetpath,
+    BuildContext context, {
+    required LastPlaceModel lastPlace,
+    required Function(double percent) onClose,
+  }) async {
     var bytes = await rootBundle.load(assetpath);
 
     EpubBook epubBook = await EpubReader.readBook(bytes.buffer.asUint8List());
@@ -30,26 +36,27 @@ class Epubease {
       htmlcontent = htmlcontent + htmlFile.Content!;
     }
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Navigator.push(
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      final percent = await Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) {
             return ShowEpub(
               html1: htmlcontent,
               epubBook: epubBook,
-              initialPercent: 0,
+              lastPlace: lastPlace,
             );
           },
         ),
       );
+      onClose(percent);
     });
   }
 
   static Future<void> open(
     String bookurl,
     BuildContext context, {
-    required double initialPercent,
+    required LastPlaceModel lastPlace,
     required Function(double percent) onClose,
   }) async {
     final response = await http.get(Uri.parse(bookurl));
@@ -74,7 +81,7 @@ class Epubease {
               return ShowEpub(
                 html1: htmlcontent,
                 epubBook: epubBook,
-                initialPercent: initialPercent,
+                lastPlace: lastPlace,
               );
             },
           ),
