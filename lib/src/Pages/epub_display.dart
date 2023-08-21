@@ -94,8 +94,8 @@ class Home extends State<ShowEpub> {
   String getFirstChapter() {
     if (epubBook.Chapters?.isNotEmpty ?? false) {
       final first = epubBook.Chapters!.first;
-      final firstSub = first.SubChapters?.first.Title ?? first.Title;
-      return firstSub ?? "";
+
+      return first.Title ?? "";
     }
     return "";
   }
