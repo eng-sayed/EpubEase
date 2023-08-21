@@ -89,19 +89,6 @@ class Home extends State<ShowEpub> {
     getTitleFromXhtml(widget.html1);
     updatecontent1();
 
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      if (wasInit && controller.hasClients) {
-        await Future.delayed(const Duration(seconds: 1));
-        if (wasInit) {
-          controller.jumpTo(
-            controller.position.maxScrollExtent *
-                (widget.lastPlace.chapterPercent ?? 0),
-          );
-          wasInit = false;
-        }
-      }
-    });
-
     super.initState();
   }
 
@@ -117,7 +104,17 @@ class Home extends State<ShowEpub> {
   }
 
   getTitleFromXhtml(String xhtml) {
-    controller.addListener(() {
+    controller.addListener(() async {
+      if (wasInit && controller.hasClients) {
+        await Future.delayed(const Duration(seconds: 1));
+        if (wasInit) {
+          controller.jumpTo(
+            controller.position.maxScrollExtent *
+                (widget.lastPlace.chapterPercent ?? 0),
+          );
+          wasInit = false;
+        }
+      }
       if (controller.position.userScrollDirection == ScrollDirection.forward &&
           showheader == false) {
         showheader = true;
