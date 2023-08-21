@@ -187,6 +187,7 @@ class Home extends State<ShowEpub> {
         shownext = true;
       }
     });
+    controller.jumpTo(0);
   }
 
   Future<bool> backpress() async {
