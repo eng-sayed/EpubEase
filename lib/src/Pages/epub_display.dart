@@ -187,6 +187,7 @@ class Home extends State<ShowEpub> {
         shownext = true;
       }
     });
+    await Future.delayed(const Duration(milliseconds: 300));
     controller.jumpTo(0);
   }
 
