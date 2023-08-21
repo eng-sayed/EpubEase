@@ -10,9 +10,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_widget_from_html_core: ^0.13.0-alpha.1
+  flutter_widget_from_html: ^0.10.3
   screen_brightness: ^0.2.2
-  epubx: ^3.0.0
+  epubx: 
   http: ^1.0.0
   html: ^0.15.4
   google_fonts: ^5.1.0

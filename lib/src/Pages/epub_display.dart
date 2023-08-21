@@ -7,7 +7,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/material.dart';
 import 'package:html/parser.dart';
 import 'package:screen_brightness/screen_brightness.dart';
-import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../Component/html_image.dart';
@@ -465,36 +465,40 @@ class Home extends State<ShowEpub> {
                                   padding: const EdgeInsets.only(
                                       left: 8, right: 3, top: 50),
                                   alignment: Alignment.center,
-                                  child: HtmlWidget(
-                                    htmlcontent,
-                                    buildAsync: true,
-                                    renderMode:
-                                        ListViewMode(controller: controller),
-                                    factoryBuilder: () => _CustomWidgetFactory(
-                                        book: widget.epubBook),
-                                    onTapUrl: (String? s) async {
-                                      if (s != null && s == "a") {
-                                        if (s.contains("chapter")) {
-                                          setState(() {
-                                            var s1 = s.split("-0");
-                                            String break1 = s1
-                                                .toList()
-                                                .last
-                                                .split(".xhtml")
-                                                .first;
-                                            int number = int.parse(break1);
-                                            selectedchapter =
-                                                s1.first + number.toString();
-                                            updatecontent1();
-                                          });
+                                  child: SelectionArea(
+                                    onSelectionChanged: (value) => print(value),
+                                    child: HtmlWidget(
+                                      htmlcontent,
+                                      buildAsync: true,
+                                      renderMode:
+                                          ListViewMode(controller: controller),
+                                      factoryBuilder: () =>
+                                          _CustomWidgetFactory(
+                                              book: widget.epubBook),
+                                      onTapUrl: (String? s) async {
+                                        if (s != null && s == "a") {
+                                          if (s.contains("chapter")) {
+                                            setState(() {
+                                              var s1 = s.split("-0");
+                                              String break1 = s1
+                                                  .toList()
+                                                  .last
+                                                  .split(".xhtml")
+                                                  .first;
+                                              int number = int.parse(break1);
+                                              selectedchapter =
+                                                  s1.first + number.toString();
+                                              updatecontent1();
+                                            });
+                                          }
                                         }
-                                      }
-                                      return true;
-                                    },
-                                    textStyle: TextStyle(
-                                        fontSize: _fontsize,
-                                        fontFamily: selectedTextStyle,
-                                        color: fontc),
+                                        return true;
+                                      },
+                                      textStyle: TextStyle(
+                                          fontSize: _fontsize,
+                                          fontFamily: selectedTextStyle,
+                                          color: fontc),
+                                    ),
                                   )),
                             ),
                           ),
