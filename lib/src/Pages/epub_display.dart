@@ -431,7 +431,7 @@ class Home extends State<ShowEpub> {
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (wasInit && controller.hasListeners) {
-        await Future.delayed(const Duration(milliseconds: 300));
+        await Future.delayed(const Duration(milliseconds: 1100));
         if (wasInit) {
           controller.jumpTo(
             controller.position.maxScrollExtent *
@@ -468,12 +468,6 @@ class Home extends State<ShowEpub> {
                                   child: HtmlWidget(
                                     htmlcontent,
                                     buildAsync: true,
-                                    onLoadingBuilder: (context, element,
-                                            loadingProgress) =>
-                                        SingleChildScrollView(
-                                            child: CircularProgressIndicator(
-                                      value: loadingProgress,
-                                    )),
                                     renderMode:
                                         ListViewMode(controller: controller),
                                     factoryBuilder: () => _CustomWidgetFactory(
