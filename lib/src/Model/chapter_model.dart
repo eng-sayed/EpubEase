@@ -4,11 +4,19 @@ class Chaptermodel {
   String chapter = '';
   bool issubchapter = false;
   List<Chaptermodel> subChapters;
+  double percent;
   Chaptermodel({
     required this.chapter,
     required this.issubchapter,
     required this.subChapters,
+    required this.percent,
   });
+  Chaptermodel copyWith({double? percent}) => Chaptermodel(
+        chapter: chapter,
+        issubchapter: issubchapter,
+        subChapters: subChapters,
+        percent: percent ?? this.percent,
+      );
 }
 
 extension ChapterExtension on List<EpubChapter>? {
@@ -18,6 +26,7 @@ extension ChapterExtension on List<EpubChapter>? {
           .map((chapter) => Chaptermodel(
                 chapter: chapter.Title ?? '',
                 issubchapter: true,
+                percent: 0,
                 subChapters: chapter.SubChapters.toChapterModels(),
               ))
           .toList();

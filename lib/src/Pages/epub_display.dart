@@ -133,6 +133,7 @@ class Home extends State<ShowEpub> {
     subChapters.add(Chaptermodel(
       chapter: chapter.Title!,
       issubchapter: isSubChapter,
+      percent: 0,
       subChapters: chapter.SubChapters.toChapterModels(),
     ));
     if (chapter.SubChapters == null || (chapter.SubChapters?.isEmpty ?? true)) {
@@ -155,6 +156,13 @@ class Home extends State<ShowEpub> {
 
       chapterslist1 += subChapters;
     });
+    if (chapterslist1.length == widget.chaptersPercentages.length) {
+      for (int i = 0; i < chapterslist1.length; i++) {
+        chapterslist1[i].copyWith(
+          percent: widget.chaptersPercentages[i].chapterPercent,
+        );
+      }
+    }
   }
 
   void updateChapterInList() {
@@ -675,9 +683,6 @@ class Home extends State<ShowEpub> {
                                   visible: shownext,
                                   child: IconButton(
                                       onPressed: () {
-                                        widget.htmlKey.currentState
-                                            ?.scrollToAnchor('p35');
-                                        /*
                                         int index = chapterslist1.indexWhere(
                                             (element) =>
                                                 element.chapter ==
@@ -699,7 +704,7 @@ class Home extends State<ShowEpub> {
                                                     .chapter;
                                           }
                                           updatecontent1();
-                                        } */
+                                        }
                                       },
                                       icon: Icon(
                                         Icons.arrow_forward_ios_rounded,

@@ -68,6 +68,11 @@ class ChaptersList extends StatelessWidget {
                                   ? FontWeight.w400
                                   : FontWeight.w800)),
                     ),
+                    trailing: Text(
+                      chapters[i].percent != 0
+                          ? chapters[i].percent.toString()
+                          : "",
+                    ),
                     dense: true,
                   ),
                   const Divider(height: 0, thickness: 1.0),
