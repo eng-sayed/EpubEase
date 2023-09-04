@@ -147,15 +147,7 @@ class Home extends State<ShowEpub> {
     return subChapters;
   }
 
-  showchapter() async {
-    epubBook.Chapters?.forEach((EpubChapter chapter) {
-      String? chapterTitle = chapter.Title;
-
-      List<Chaptermodel> subChapters = [];
-      subChapters.addAll(getAllChapters(chapter, false));
-
-      chapterslist1 += subChapters;
-    });
+  void syncChapters() {
     if (chapterslist1.length == widget.chaptersPercentages.length) {
       for (int i = 0; i < chapterslist1.length; i++) {
         chapterslist1[i].copyWith(
@@ -165,11 +157,24 @@ class Home extends State<ShowEpub> {
     }
   }
 
+  showchapter() async {
+    epubBook.Chapters?.forEach((EpubChapter chapter) {
+      String? chapterTitle = chapter.Title;
+
+      List<Chaptermodel> subChapters = [];
+      subChapters.addAll(getAllChapters(chapter, false));
+
+      chapterslist1 += subChapters;
+    });
+    syncChapters();
+  }
+
   void updateChapterInList() {
     final index = widget.chaptersPercentages
         .indexWhere((element) => element.chapterTitle == selectedchapter);
     widget.chaptersPercentages[index] = widget.chaptersPercentages[index]
         .copyWith(chapterPercent: getCurrentChapterPercent());
+    syncChapters();
   }
 
   String? findChapter(List<EpubChapter> chapters) {
