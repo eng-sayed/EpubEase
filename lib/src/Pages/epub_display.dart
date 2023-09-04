@@ -126,27 +126,32 @@ class Home extends State<ShowEpub> {
     showchapter();
   }
 
+  List<Chaptermodel> getAllChapters(EpubChapter chapter,
+      [bool isSubChapter = true]) {
+    List<Chaptermodel> subChapters = [];
+    subChapters.add(Chaptermodel(
+      chapter: chapter.Title!,
+      issubchapter: isSubChapter,
+      subChapters: chapter.SubChapters.toChapterModels(),
+    ));
+    if (chapter.SubChapters == null || (chapter.SubChapters?.isEmpty ?? true)) {
+    } else {
+      for (var element in chapter.SubChapters!) {
+        final chapters = getAllChapters(element);
+        subChapters.addAll(chapters);
+      }
+    }
+
+    return subChapters;
+  }
+
   showchapter() async {
     epubBook.Chapters?.forEach((EpubChapter chapter) {
       String? chapterTitle = chapter.Title;
 
       List<Chaptermodel> subChapters = [];
-      for (var element in chapter.SubChapters!) {
-        subChapters.add(
-          Chaptermodel(
-            chapter: element.Title!,
-            issubchapter: true,
-            subChapters: element.SubChapters.toChapterModels(),
-          ),
-        );
-      }
-      chapterslist1.add(
-        Chaptermodel(
-          chapter: chapterTitle!,
-          issubchapter: false,
-          subChapters: chapter.SubChapters.toChapterModels(),
-        ),
-      );
+      subChapters.addAll(getAllChapters(chapter, false));
+
       chapterslist1 += subChapters;
     });
   }
@@ -158,31 +163,38 @@ class Home extends State<ShowEpub> {
         .copyWith(chapterPercent: getCurrentChapterPercent());
   }
 
-  updatecontent1() async {
-    String content = '';
-
-    epubBook.Chapters?.forEach((EpubChapter chapter) {
+  String? findChapter(List<EpubChapter> chapters) {
+    String? content;
+    for (int i = 0; i < chapters.length; i++) {
+      final chapter = chapters[i];
       String? chapterTitle = chapter.Title;
 
       if (chapterTitle?.toLowerCase() == selectedchapter.toLowerCase()) {
         content = chapter.HtmlContent!;
+        break;
 
         List<EpubChapter>? subChapters = chapter.SubChapters;
-        if (subChapters != null && subChapters.isNotEmpty) {
+        /*     if (subChapters != null && subChapters.isNotEmpty) {
           for (int i = 0; i < 1; i++) {
             content = content + subChapters[i].HtmlContent!;
           }
-        }
+        } */
       } else {
-        List<EpubChapter>? subChapters = chapter.SubChapters;
-        subChapters?.forEach((element) {
-          if (element.Title == selectedchapter) {
-            content = element.HtmlContent!;
-          }
-        });
+        List<EpubChapter> subChapters = chapter.SubChapters ?? [];
+        final result = findChapter(subChapters);
+        if (result != null) {
+          content = result;
+          break;
+        }
       }
-    });
-    htmlcontent = content;
+    }
+    return content;
+  }
+
+  updatecontent1() async {
+    String content = '';
+
+    htmlcontent = findChapter(epubBook.Chapters ?? []) ?? "";
     print(htmlcontent);
 
     int index = chapterslist1
