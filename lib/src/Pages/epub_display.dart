@@ -160,7 +160,7 @@ class Home extends State<ShowEpub> {
 
   updatecontent1() async {
     String content = '';
-    updateChapterInList();
+
     epubBook.Chapters?.forEach((EpubChapter chapter) {
       String? chapterTitle = chapter.Title;
 
