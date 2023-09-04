@@ -29,6 +29,7 @@ class ShowEpub extends StatefulWidget {
   List splithtml = [];
   final LastPlaceModel lastPlace;
   final List<LastPlaceModel> chaptersPercentages;
+  final htmlKey = GlobalKey<HtmlWidgetState>();
 
   ShowEpub({
     super.key,
@@ -515,6 +516,7 @@ class Home extends State<ShowEpub> {
                                     onSelectionChanged: (value) => print(value),
                                     child: HtmlWidget(
                                       htmlcontent,
+                                      key: widget.htmlKey,
                                       buildAsync: true,
                                       renderMode:
                                           ListViewMode(controller: controller),
@@ -673,6 +675,9 @@ class Home extends State<ShowEpub> {
                                   visible: shownext,
                                   child: IconButton(
                                       onPressed: () {
+                                        widget.htmlKey.currentState
+                                            ?.scrollToAnchor('p31');
+                                        /*
                                         int index = chapterslist1.indexWhere(
                                             (element) =>
                                                 element.chapter ==
@@ -694,7 +699,7 @@ class Home extends State<ShowEpub> {
                                                     .chapter;
                                           }
                                           updatecontent1();
-                                        }
+                                        } */
                                       },
                                       icon: Icon(
                                         Icons.arrow_forward_ios_rounded,
