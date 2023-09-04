@@ -5,7 +5,6 @@ import 'package:epubease/src/core/utils/words_counter.dart';
 import 'package:epubx/epubx.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/material.dart';
-import 'package:html/parser.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -28,12 +27,14 @@ class ShowEpub extends StatefulWidget {
   EpubBook epubBook;
   List splithtml = [];
   final LastPlaceModel lastPlace;
+  final List<LastPlaceModel> chaptersPercentages;
 
   ShowEpub({
     super.key,
     required this.html1,
     required this.epubBook,
     required this.lastPlace,
+    required this.chaptersPercentages,
   });
 
   @override
@@ -93,8 +94,8 @@ class Home extends State<ShowEpub> {
   }
 
   String getLastChapter() {
-    if (widget.lastPlace.lastChapter?.isNotEmpty ?? false) {
-      return widget.lastPlace.lastChapter ?? "";
+    if (widget.lastPlace.chapterTitle?.isNotEmpty ?? false) {
+      return widget.lastPlace.chapterTitle ?? "";
     } else if (epubBook.Chapters?.isNotEmpty ?? false) {
       final first = epubBook.Chapters!.first;
 

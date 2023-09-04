@@ -1,4 +1,4 @@
-import 'package:epubease/src/core/utils/count_result.dart';
+import 'package:epubease/src/core/utils/count_words_result.dart';
 import 'package:epubx/epubx.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart';
@@ -6,7 +6,7 @@ import 'package:html/parser.dart';
 class WordsCounter {
   var wasChapterFound = false;
   WordsCounter();
-  CountResult countWordsBefore(
+  CountWordsResult countWordsBefore(
       List<EpubChapter> chapters, String selectedchapter) {
     var wordsBefore = 0;
     int wordsInChapter = 0;
@@ -29,7 +29,7 @@ class WordsCounter {
         }
       }
     }
-    return CountResult(
+    return CountWordsResult(
       symbolsBefore: wordsBefore,
       symbolsInCurrent: wordsInChapter,
     );

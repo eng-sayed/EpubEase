@@ -3,9 +3,9 @@ library epubease;
 import 'dart:async';
 
 import 'package:epubease/src/Model/last_place_model.dart';
+import 'package:epubease/src/core/utils/chapters_counter.dart';
 import 'package:epubx/epubx.dart';
 import 'package:flutter/material.dart';
-import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/services.dart' show rootBundle;
@@ -23,6 +23,7 @@ class Epubease {
     String assetpath,
     BuildContext context, {
     required LastPlaceModel lastPlace,
+    required List<LastPlaceModel> chapters,
     required Function(double percent) onClose,
   }) async {
     var bytes = await rootBundle.load(assetpath);
@@ -36,6 +37,10 @@ class Epubease {
       htmlcontent = htmlcontent + htmlFile.Content!;
     }
 
+    final countedChapters =
+        ChaptersCounter().countChapters(epubBook.Chapters ?? []);
+    final chaptersPercentages = chapters.isEmpty ? countedChapters : chapters;
+
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       final percent = await Navigator.push(
         context,
@@ -45,6 +50,7 @@ class Epubease {
               html1: htmlcontent,
               epubBook: epubBook,
               lastPlace: lastPlace,
+              chaptersPercentages: chaptersPercentages,
             );
           },
         ),
@@ -57,6 +63,7 @@ class Epubease {
     String bookurl,
     BuildContext context, {
     required LastPlaceModel lastPlace,
+    required List<LastPlaceModel> chapters,
     required Function(double percent) onClose,
   }) async {
     final response = await http.get(Uri.parse(bookurl));
@@ -73,6 +80,10 @@ class Epubease {
         htmlcontent = htmlcontent + htmlFile.Content!;
       }
 
+      final countedChapters =
+          ChaptersCounter().countChapters(epubBook.Chapters ?? []);
+      final chaptersPercentages = chapters.isEmpty ? countedChapters : chapters;
+
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
         final percent = await Navigator.push(
           context,
@@ -82,6 +93,7 @@ class Epubease {
                 html1: htmlcontent,
                 epubBook: epubBook,
                 lastPlace: lastPlace,
+                chaptersPercentages: chaptersPercentages,
               );
             },
           ),

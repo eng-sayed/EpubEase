@@ -1,8 +1,8 @@
-class CountResult {
+class CountWordsResult {
   final int symbolsBefore;
   final int symbolsInCurrent;
 
-  const CountResult({
+  const CountWordsResult({
     required this.symbolsBefore,
     required this.symbolsInCurrent,
   });
