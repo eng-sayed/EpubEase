@@ -70,7 +70,7 @@ class ChaptersList extends StatelessWidget {
                     ),
                     trailing: Text(
                       chapters[i].percent != 0
-                          ? chapters[i].percent.toString()
+                          ? "${(chapters[i].percent * 100).toStringAsFixed(2)}%"
                           : "",
                     ),
                     dense: true,

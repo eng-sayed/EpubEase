@@ -150,7 +150,7 @@ class Home extends State<ShowEpub> {
   void syncChapters() {
     if (chapterslist1.length == widget.chaptersPercentages.length) {
       for (int i = 0; i < chapterslist1.length; i++) {
-        chapterslist1[i].copyWith(
+        chapterslist1[i] = chapterslist1[i].copyWith(
           percent: widget.chaptersPercentages[i].chapterPercent,
         );
       }
