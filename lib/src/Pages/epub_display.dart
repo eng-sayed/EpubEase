@@ -517,6 +517,7 @@ class Home extends State<ShowEpub> {
                                                   .split(".xhtml")
                                                   .first;
                                               int number = int.parse(break1);
+                                              updateChapterInList();
                                               selectedchapter =
                                                   s1.first + number.toString();
                                               updatecontent1();
@@ -623,9 +624,11 @@ class Home extends State<ShowEpub> {
                                             chapterslist1[index - 2]
                                                 .subChapters
                                                 .isNotEmpty) {
+                                          updateChapterInList();
                                           selectedchapter =
                                               chapterslist1[index - 2].chapter;
                                         } else {
+                                          updateChapterInList();
                                           selectedchapter =
                                               chapterslist1[index - 1].chapter;
                                         }
@@ -665,10 +668,12 @@ class Home extends State<ShowEpub> {
                                               chapterslist1[index]
                                                   .subChapters
                                                   .isNotEmpty) {
+                                            updateChapterInList();
                                             selectedchapter =
                                                 chapterslist1[index + 2]
                                                     .chapter;
                                           } else {
+                                            updateChapterInList();
                                             selectedchapter =
                                                 chapterslist1[index + 1]
                                                     .chapter;
@@ -708,6 +713,8 @@ class Home extends State<ShowEpub> {
                             MaterialPageRoute(
                               builder: (context) => ChaptersList(
                                 chapters: chapterslist1,
+                                beforeChapterChanged: () =>
+                                    updateChapterInList(),
                               ),
                             ),
                           );

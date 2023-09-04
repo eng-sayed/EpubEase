@@ -7,7 +7,12 @@ import 'epub_display.dart';
 // ignore: must_be_immutable
 class ChaptersList extends StatelessWidget {
   List<Chaptermodel> chapters = [];
-  ChaptersList({super.key, required this.chapters});
+  final VoidCallback beforeChapterChanged;
+  ChaptersList({
+    super.key,
+    required this.beforeChapterChanged,
+    required this.chapters,
+  });
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -43,6 +48,7 @@ class ChaptersList extends StatelessWidget {
                 children: [
                   ListTile(
                     onTap: () {
+                      beforeChapterChanged();
                       selectedchapter = chapters[i].chapter;
 
                       Navigator.of(context).pop(true);
