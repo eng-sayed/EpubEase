@@ -3,6 +3,7 @@ library epubease;
 import 'dart:async';
 
 import 'package:epubease/src/Model/last_place_model.dart';
+import 'package:epubease/src/Model/reader_result.dart';
 import 'package:epubease/src/core/utils/chapters_counter.dart';
 import 'package:epubx/epubx.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +25,7 @@ class Epubease {
     BuildContext context, {
     required LastPlaceModel lastPlace,
     required List<LastPlaceModel> chapters,
-    required Function(double percent) onClose,
+    required Function(ReaderResult result) onClose,
   }) async {
     var bytes = await rootBundle.load(assetpath);
 
@@ -42,7 +43,7 @@ class Epubease {
     final chaptersPercentages = chapters.isEmpty ? countedChapters : chapters;
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      final percent = await Navigator.push(
+      final result = await Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) {
@@ -55,7 +56,7 @@ class Epubease {
           },
         ),
       );
-      onClose(percent);
+      onClose(result);
     });
   }
 
@@ -64,7 +65,7 @@ class Epubease {
     BuildContext context, {
     required LastPlaceModel lastPlace,
     required List<LastPlaceModel> chapters,
-    required Function(double percent) onClose,
+    required Function(ReaderResult result) onClose,
   }) async {
     final response = await http.get(Uri.parse(bookurl));
     if (response.statusCode == 200) {
@@ -85,7 +86,7 @@ class Epubease {
       final chaptersPercentages = chapters.isEmpty ? countedChapters : chapters;
 
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-        final percent = await Navigator.push(
+        final result = await Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) {
@@ -98,7 +99,7 @@ class Epubease {
             },
           ),
         );
-        onClose(percent);
+        onClose(result);
       });
     }
   }

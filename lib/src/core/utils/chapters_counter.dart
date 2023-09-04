@@ -19,7 +19,7 @@ class ChaptersCounter {
       final subChapters = countChapters(
         chapter.SubChapters ?? [],
       );
-      reindexPlaces(subChapters, allChapters.length - 1);
+      reindexPlaces(subChapters, allChapters.length);
       allChapters.addAll(subChapters);
     }
     return allChapters;
