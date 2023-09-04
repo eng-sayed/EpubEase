@@ -185,14 +185,14 @@ class Home extends State<ShowEpub> {
 
       if (chapterTitle?.toLowerCase() == selectedchapter.toLowerCase()) {
         content = chapter.HtmlContent!;
-        break;
 
         List<EpubChapter>? subChapters = chapter.SubChapters;
-        /*     if (subChapters != null && subChapters.isNotEmpty) {
+        if (subChapters != null && subChapters.isNotEmpty) {
           for (int i = 0; i < 1; i++) {
-            content = content + subChapters[i].HtmlContent!;
+            content = (content ?? "") + subChapters[i].HtmlContent!;
           }
-        } */
+        }
+        break;
       } else {
         List<EpubChapter> subChapters = chapter.SubChapters ?? [];
         final result = findChapter(subChapters);
