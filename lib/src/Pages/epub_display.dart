@@ -166,10 +166,12 @@ class Home extends State<ShowEpub> {
 
       if (chapterTitle?.toLowerCase() == selectedchapter.toLowerCase()) {
         content = chapter.HtmlContent!;
+        print(content);
         List<EpubChapter>? subChapters = chapter.SubChapters;
         if (subChapters != null && subChapters.isNotEmpty) {
           for (int i = 0; i < 1; i++) {
             content = content + subChapters[i].HtmlContent!;
+            print(content);
           }
         }
       } else {
@@ -177,6 +179,7 @@ class Home extends State<ShowEpub> {
         subChapters?.forEach((element) {
           if (element.Title == selectedchapter) {
             content = element.HtmlContent!;
+            print(content);
           }
         });
       }
