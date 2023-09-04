@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:epubease/src/Model/last_place_model.dart';
+import 'package:epubease/src/Model/reader_result.dart';
 import 'package:epubease/src/core/utils/words_counter.dart';
 import 'package:epubx/epubx.dart';
 import 'package:flutter/rendering.dart';
@@ -150,9 +151,16 @@ class Home extends State<ShowEpub> {
     });
   }
 
+  void updateChapterInList() {
+    final index = widget.chaptersPercentages
+        .indexWhere((element) => element.chapterTitle == selectedchapter);
+    widget.chaptersPercentages[index] = widget.chaptersPercentages[index]
+        .copyWith(chapterPercent: getCurrentChapterPercent());
+  }
+
   updatecontent1() async {
     String content = '';
-
+    updateChapterInList();
     epubBook.Chapters?.forEach((EpubChapter chapter) {
       String? chapterTitle = chapter.Title;
 
@@ -193,8 +201,8 @@ class Home extends State<ShowEpub> {
   }
 
   Future<bool> backpress() async {
-    final currentChapterPercent =
-        controller.offset / controller.position.maxScrollExtent;
+    final currentChapterPercent = getCurrentChapterPercent();
+    updateChapterInList();
 
     final wordsResult = WordsCounter()
         .countWordsBefore(epubBook.Chapters ?? [], selectedchapter);
@@ -204,9 +212,29 @@ class Home extends State<ShowEpub> {
         currentChapterPercent * wordsResult.symbolsInCurrent;
     final progress = (wordsResult.symbolsBefore + currentChapterProgress) /
         allResult.symbolsBefore;
-    Navigator.of(context).pop(progress);
+    Navigator.of(context).pop(
+      ReaderResult(
+        chapters: widget.chaptersPercentages,
+        totalProgress: progress,
+        lactPlace: getCurrentLastPlace(),
+      ),
+    );
+
     return false;
   }
+
+  LastPlaceModel getCurrentLastPlace() {
+    final chapter = widget.chaptersPercentages
+        .firstWhere((element) => element.chapterTitle == selectedchapter);
+    return LastPlaceModel(
+      chapterPercent: getCurrentChapterPercent(),
+      chapterTitle: selectedchapter,
+      chapterIndex: chapter.chapterIndex,
+    );
+  }
+
+  double getCurrentChapterPercent() =>
+      controller.offset / controller.position.maxScrollExtent;
 
   void setBrightness(double brightness) async {
     await ScreenBrightness().setScreenBrightness(brightness);
