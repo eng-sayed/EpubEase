@@ -739,6 +739,7 @@ class Home extends State<ShowEpub> {
                       elevation: 0,
                       leading: IconButton(
                         onPressed: () async {
+                          syncChapters();
                           bool updatecontent = await Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (context) => ChaptersList(
