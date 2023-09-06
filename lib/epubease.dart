@@ -40,6 +40,7 @@ class Epubease {
 
     final chaptersPercentages =
         dealWithChapters(chapters, epubBook.Chapters ?? []);
+    final realLastPlace = dealWithLastPlace(chaptersPercentages, lastPlace);
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       final result = await Navigator.push(
@@ -49,7 +50,7 @@ class Epubease {
             return ShowEpub(
               html1: htmlcontent,
               epubBook: epubBook,
-              lastPlace: lastPlace,
+              lastPlace: realLastPlace,
               chaptersPercentages: chaptersPercentages,
             );
           },
@@ -82,6 +83,7 @@ class Epubease {
 
       final chaptersPercentages =
           dealWithChapters(chapters, epubBook.Chapters ?? []);
+      final realLastPlace = dealWithLastPlace(chaptersPercentages, lastPlace);
 
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
         final result = await Navigator.push(
@@ -91,7 +93,7 @@ class Epubease {
               return ShowEpub(
                 html1: htmlcontent,
                 epubBook: epubBook,
-                lastPlace: lastPlace,
+                lastPlace: realLastPlace,
                 chaptersPercentages: chaptersPercentages,
               );
             },
@@ -119,4 +121,14 @@ List<LastPlaceModel> dealWithChapters(
     resultChapters = countedChapters;
   }
   return resultChapters;
+}
+
+LastPlaceModel? dealWithLastPlace(
+    List<LastPlaceModel> chapters, LastPlaceModel? lastPlace) {
+  if (lastPlace == null) {
+    return lastPlace;
+  }
+  final chapter = chapters
+      .firstWhere((element) => element.chapterIndex == lastPlace.chapterIndex);
+  return lastPlace.copyWith(chapterTitle: chapter.chapterTitle);
 }
