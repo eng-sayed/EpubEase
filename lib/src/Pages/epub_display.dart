@@ -27,7 +27,7 @@ class ShowEpub extends StatefulWidget {
 
   EpubBook epubBook;
   List splithtml = [];
-  final LastPlaceModel lastPlace;
+  final LastPlaceModel? lastPlace;
   final List<LastPlaceModel> chaptersPercentages;
   final htmlKey = GlobalKey<HtmlWidgetState>();
 
@@ -96,14 +96,17 @@ class Home extends State<ShowEpub> {
   }
 
   String getLastChapter() {
-    if (widget.lastPlace.chapterTitle?.isNotEmpty ?? false) {
-      return widget.lastPlace.chapterTitle ?? "";
-    } else if (epubBook.Chapters?.isNotEmpty ?? false) {
-      final first = epubBook.Chapters!.first;
-
-      return first.Title ?? "";
+    if (widget.lastPlace != null) {
+      final goalChapter = widget.lastPlace?.chapterTitle;
+      if (goalChapter != null) {
+        if (isThereChapter(goalChapter, epubBook.Chapters ?? []) == true) {
+          return goalChapter;
+        }
+      }
     }
-    return "";
+    final first = epubBook.Chapters!.firstOrNull;
+
+    return first?.Title ?? "";
   }
 
   getTitleFromXhtml(String xhtml) {
@@ -203,6 +206,28 @@ class Home extends State<ShowEpub> {
       }
     }
     return content;
+  }
+
+  bool? isThereChapter(String goalChapter, List<EpubChapter> chapters) {
+    bool? success;
+    for (int i = 0; i < chapters.length; i++) {
+      final chapter = chapters[i];
+      String? chapterTitle = chapter.Title;
+
+      if (chapterTitle?.toLowerCase() == goalChapter.toLowerCase()) {
+        success = true;
+
+        break;
+      } else {
+        List<EpubChapter> subChapters = chapter.SubChapters ?? [];
+        final result = isThereChapter(goalChapter, subChapters);
+        if (result != null) {
+          success = result;
+          break;
+        }
+      }
+    }
+    return success;
   }
 
   updatecontent1() async {
@@ -495,7 +520,7 @@ class Home extends State<ShowEpub> {
         if (wasInit) {
           controller.jumpTo(
             controller.position.maxScrollExtent *
-                (widget.lastPlace.chapterPercent ?? 0),
+                (widget.lastPlace?.chapterPercent ?? 0),
           );
           wasInit = false;
         }

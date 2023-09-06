@@ -23,8 +23,8 @@ class Epubease {
   static Future<void> openAsset(
     String assetpath,
     BuildContext context, {
-    required LastPlaceModel lastPlace,
-    required List<LastPlaceModel> chapters,
+    required LastPlaceModel? lastPlace,
+    required List<LastPlaceModel>? chapters,
     required Function(ReaderResult result) onClose,
   }) async {
     var bytes = await rootBundle.load(assetpath);
@@ -38,9 +38,8 @@ class Epubease {
       htmlcontent = htmlcontent + htmlFile.Content!;
     }
 
-    final countedChapters =
-        ChaptersCounter().countChapters(epubBook.Chapters ?? []);
-    final chaptersPercentages = chapters.isEmpty ? countedChapters : chapters;
+    final chaptersPercentages =
+        dealWithChapters(chapters, epubBook.Chapters ?? []);
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       final result = await Navigator.push(
@@ -63,8 +62,8 @@ class Epubease {
   static Future<void> open(
     String bookurl,
     BuildContext context, {
-    required LastPlaceModel lastPlace,
-    required List<LastPlaceModel> chapters,
+    required LastPlaceModel? lastPlace,
+    required List<LastPlaceModel>? chapters,
     required Function(ReaderResult result) onClose,
   }) async {
     final response = await http.get(Uri.parse(bookurl));
@@ -81,9 +80,8 @@ class Epubease {
         htmlcontent = htmlcontent + htmlFile.Content!;
       }
 
-      final countedChapters =
-          ChaptersCounter().countChapters(epubBook.Chapters ?? []);
-      final chaptersPercentages = chapters.isEmpty ? countedChapters : chapters;
+      final chaptersPercentages =
+          dealWithChapters(chapters, epubBook.Chapters ?? []);
 
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
         final result = await Navigator.push(
@@ -103,4 +101,22 @@ class Epubease {
       });
     }
   }
+}
+
+List<LastPlaceModel> dealWithChapters(
+    List<LastPlaceModel>? chapters, List<EpubChapter> bookChapters) {
+  List<LastPlaceModel> resultChapters;
+  final countedChapters = ChaptersCounter().countChapters(bookChapters);
+  if (chapters != null &&
+      chapters.isNotEmpty &&
+      countedChapters.length == chapters.length) {
+    resultChapters = [...chapters];
+    for (int i = 0; i < resultChapters.length; i++) {
+      resultChapters[i] = resultChapters[i]
+          .copyWith(chapterTitle: countedChapters[i].chapterTitle);
+    }
+  } else {
+    resultChapters = countedChapters;
+  }
+  return resultChapters;
 }
