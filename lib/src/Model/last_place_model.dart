@@ -1,7 +1,7 @@
 class LastPlaceModel {
   final String? chapterTitle;
   final int? chapterIndex;
-  final double? chapterPercent;
+  final int? chapterPercent;
 
   const LastPlaceModel({
     required this.chapterPercent,

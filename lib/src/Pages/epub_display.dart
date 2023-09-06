@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:epubease/src/Model/last_place_model.dart';
@@ -175,8 +176,13 @@ class Home extends State<ShowEpub> {
   void updateChapterInList() {
     final index = widget.chaptersPercentages
         .indexWhere((element) => element.chapterTitle == selectedchapter);
-    widget.chaptersPercentages[index] = widget.chaptersPercentages[index]
-        .copyWith(chapterPercent: getCurrentChapterPercent());
+    widget.chaptersPercentages[index] =
+        widget.chaptersPercentages[index].copyWith(
+      chapterPercent: max(
+        getCurrentChapterPercent(),
+        widget.chaptersPercentages[index].chapterPercent ?? 0,
+      ),
+    );
     syncChapters();
   }
 
@@ -264,7 +270,7 @@ class Home extends State<ShowEpub> {
         .countWordsBefore(epubBook.Chapters ?? [], "sdvsmkvmksmdcs");
     final currentChapterProgress =
         currentChapterPercent * wordsResult.symbolsInCurrent;
-    final progress = (wordsResult.symbolsBefore + currentChapterProgress) /
+    final progress = (wordsResult.symbolsBefore + currentChapterProgress) ~/
         allResult.symbolsBefore;
     Navigator.of(context).pop(
       ReaderResult(
@@ -287,8 +293,8 @@ class Home extends State<ShowEpub> {
     );
   }
 
-  double getCurrentChapterPercent() =>
-      controller.offset / controller.position.maxScrollExtent;
+  int getCurrentChapterPercent() =>
+      controller.offset ~/ controller.position.maxScrollExtent;
 
   void setBrightness(double brightness) async {
     await ScreenBrightness().setScreenBrightness(brightness);
