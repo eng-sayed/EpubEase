@@ -1,7 +1,7 @@
 class LastPlaceModel {
   final String? chapterTitle;
   final int? chapterIndex;
-  final int? chapterPercent;
+  final double? chapterPercent;
 
   const LastPlaceModel({
     required this.chapterPercent,
@@ -12,7 +12,7 @@ class LastPlaceModel {
   LastPlaceModel copyWith({
     String? chapterTitle,
     int? chapterIndex,
-    int? chapterPercent,
+    double? chapterPercent,
   }) =>
       LastPlaceModel(
         chapterPercent: chapterPercent ?? this.chapterPercent,

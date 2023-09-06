@@ -270,7 +270,7 @@ class Home extends State<ShowEpub> {
         .countWordsBefore(epubBook.Chapters ?? [], "sdvsmkvmksmdcs");
     final currentChapterProgress =
         currentChapterPercent * wordsResult.symbolsInCurrent;
-    final progress = (wordsResult.symbolsBefore + currentChapterProgress) ~/
+    final progress = (wordsResult.symbolsBefore + currentChapterProgress) /
         allResult.symbolsBefore;
     Navigator.of(context).pop(
       ReaderResult(
@@ -293,8 +293,8 @@ class Home extends State<ShowEpub> {
     );
   }
 
-  int getCurrentChapterPercent() =>
-      controller.offset ~/ controller.position.maxScrollExtent;
+  double getCurrentChapterPercent() =>
+      controller.offset / controller.position.maxScrollExtent;
 
   void setBrightness(double brightness) async {
     await ScreenBrightness().setScreenBrightness(brightness);

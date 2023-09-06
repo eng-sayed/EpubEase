@@ -4,14 +4,14 @@ class Chaptermodel {
   String chapter = '';
   bool issubchapter = false;
   List<Chaptermodel> subChapters;
-  int percent;
+  double percent;
   Chaptermodel({
     required this.chapter,
     required this.issubchapter,
     required this.subChapters,
     required this.percent,
   });
-  Chaptermodel copyWith({int? percent}) => Chaptermodel(
+  Chaptermodel copyWith({double? percent}) => Chaptermodel(
         chapter: chapter,
         issubchapter: issubchapter,
         subChapters: subChapters,
