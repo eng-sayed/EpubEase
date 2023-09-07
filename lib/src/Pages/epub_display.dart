@@ -5,7 +5,7 @@ import 'dart:typed_data';
 import 'package:epubease/src/Model/calculation_model.dart';
 import 'package:epubease/src/Model/last_place_model.dart';
 import 'package:epubease/src/Model/reader_result.dart';
-import 'package:epubease/src/core/utils/words_counter.dart';
+import 'package:epubease/src/core/utils/utils.dart';
 import 'package:epubease/src/data/repository.dart';
 import 'package:epubx/epubx.dart';
 import 'package:flutter/rendering.dart';
@@ -64,7 +64,7 @@ class Home extends State<ShowEpub> {
   bool speak = false;
   String docid = "";
   bool wasInit = true;
-  late Timer timer;
+  Timer? timer;
   bool canBeRead = false;
 
   String fontstyle = 'Montserrat-Medium'.toString();
@@ -168,7 +168,7 @@ class Home extends State<ShowEpub> {
     }
     addDataToRepo();
     canBeRead = false;
-    timer.cancel();
+    timer?.cancel();
     timer = Timer(const Duration(seconds: 10), () {
       canBeRead = true;
     });
@@ -233,18 +233,18 @@ class Home extends State<ShowEpub> {
     final currentChapterPercent = getCurrentChapterPercent();
     updateChapterInList();
 
-    final wordsResult = WordsCounter()
-        .countWordsBefore(epubBook.Chapters ?? [], selectedchapter);
-    final allResult = WordsCounter()
-        .countWordsBefore(epubBook.Chapters ?? [], "sdvsmkvmksmdcs");
-    final currentChapterProgress =
-        currentChapterPercent * wordsResult.symbolsInCurrent;
-    final progress = (wordsResult.symbolsBefore + currentChapterProgress) /
-        allResult.symbolsBefore;
+    final progress = countProgress(
+      selectedChapter: selectedchapter,
+      bookChapters: epubBook.Chapters ?? [],
+      currentChapterPercent: currentChapterPercent,
+    );
     Navigator.of(context).pop(
       ReaderResult(
         chapters: widget.realChapters.toLastPlaces(),
-        totalProgress: progress,
+        totalProgress: max(
+          progress,
+          widget.repository.lastReadResult.totalProgress,
+        ),
         lastPlace: getCurrentLastPlace(),
       ),
     );

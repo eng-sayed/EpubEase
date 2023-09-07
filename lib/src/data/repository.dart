@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:epubease/src/Model/calculation_model.dart';
 import 'package:epubease/src/Model/chapter_model.dart';
 import 'package:epubease/src/Model/reader_result.dart';
@@ -29,10 +31,13 @@ class Repository {
     double progress = lastReadResult.totalProgress;
 
     if (model.canBeRead) {
-      progress = countProgress(
-        selectedChapter: model.selectedChapter,
-        bookChapters: model.bookChapters,
-        currentChapterPercent: model.currentChapterPercent,
+      progress = max(
+        countProgress(
+          selectedChapter: model.selectedChapter,
+          bookChapters: model.bookChapters,
+          currentChapterPercent: model.currentChapterPercent,
+        ),
+        lastReadResult.totalProgress,
       );
     }
     final result = ReaderResult(
