@@ -35,6 +35,15 @@ class WordsCounter {
     );
   }
 
+  int countWordsInChapterAndSubChapters(EpubChapter chapter) {
+    final wordsInChapter = countWordsInChapter(chapter);
+    var wordsInSubChapters = 0;
+    chapter.SubChapters?.forEach((element) {
+      wordsInSubChapters += countWordsInChapterAndSubChapters(element);
+    });
+    return wordsInChapter + wordsInSubChapters;
+  }
+
   int countWordsInChapter(EpubChapter chapter) {
     final doc = parse(chapter.HtmlContent);
     return getWordCountsInNodeList(doc.nodes);

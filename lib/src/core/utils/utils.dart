@@ -16,3 +16,14 @@ double countProgress({
       allResult.symbolsBefore;
   return progress;
 }
+
+Duration countReadDurationOfChapter(EpubChapter chapter) {
+  final symbolsInChapter =
+      WordsCounter().countWordsInChapterAndSubChapters(chapter);
+  const symbolsPerSecond = 25;
+  final normalReadSeconds = symbolsInChapter / symbolsPerSecond;
+  const coef = 0.1;
+  final coefReadSeconds = normalReadSeconds * coef;
+  final coedReadMilliseconds = coefReadSeconds * 1000;
+  return Duration(milliseconds: coedReadMilliseconds.round());
+}
