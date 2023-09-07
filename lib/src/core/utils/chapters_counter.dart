@@ -1,8 +1,10 @@
 import 'package:epubease/src/Model/chapter_model.dart';
+import 'package:epubease/src/core/utils/words_counter.dart';
 import 'package:epubx/epubx.dart';
 
 class ChaptersCounter {
   var wasChapterFound = false;
+  final WordsCounter wordsCounter = WordsCounter();
 
   ChaptersCounter();
 
@@ -43,6 +45,7 @@ class ChaptersCounter {
         percent: 0,
         subChapters: subSubChapters,
         index: startIndex + subChapters.length,
+        symbolsCount: wordsCounter.countWordsInChapter(chapter),
       ),
     );
     subChapters.addAll(subSubChapters);

@@ -6,6 +6,7 @@ import 'package:epubease/src/Model/calculation_model.dart';
 import 'package:epubease/src/Model/last_place_model.dart';
 import 'package:epubease/src/Model/reader_result.dart';
 import 'package:epubease/src/core/utils/utils.dart';
+import 'package:epubease/src/core/utils/words_counter.dart';
 import 'package:epubease/src/data/repository.dart';
 import 'package:epubx/epubx.dart';
 import 'package:flutter/rendering.dart';
@@ -260,6 +261,9 @@ class Home extends State<ShowEpub> {
       bookChapters: epubBook.Chapters ?? [],
       currentChapterPercent: currentChapterPercent,
     );
+    final test1 =
+        WordsCounter().countWordsBeforeTest(realChapters, selectedchapter);
+    final test2 = WordsCounter().countWordsBeforeTest(realChapters);
     Navigator.of(context).pop(
       ReaderResult(
         chapters: widget.realChapters.toLastPlaces(),

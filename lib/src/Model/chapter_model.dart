@@ -6,18 +6,21 @@ class Chaptermodel {
   List<Chaptermodel> subChapters;
   double percent;
   int index;
+  int symbolsCount;
   Chaptermodel({
     required this.title,
     required this.index,
     required this.issubchapter,
     required this.subChapters,
     required this.percent,
+    required this.symbolsCount,
   });
   Chaptermodel copyWith({double? percent}) => Chaptermodel(
         title: title,
         issubchapter: issubchapter,
         subChapters: subChapters,
         index: index,
+        symbolsCount: symbolsCount,
         percent: percent ?? this.percent,
       );
 }
