@@ -100,7 +100,7 @@ class Home extends State<ShowEpub> {
     selectedchapter = getLastChapter();
     getTitleFromXhtml(widget.html1);
     updatecontent1();
-    updateChapterInList();
+
     super.initState();
   }
 
@@ -274,191 +274,181 @@ class Home extends State<ShowEpub> {
 
   updatefontsettings() {
     return showModalBottomSheet(
-        context: context,
-        elevation: 10,
-        clipBehavior: Clip.antiAlias,
-        backgroundColor: bag,
-        enableDrag: true,
-        shape: const OutlineInputBorder(
-          borderSide: BorderSide.none,
-        ),
-        builder: (context) {
-          return SingleChildScrollView(
-              child: StatefulBuilder(
-                  builder: (BuildContext context, setState) => SizedBox(
-                        height: 170,
-                        child: Column(
-                          children: [
-                            Container(
-                              margin: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 8),
-                              height: 45,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      updatetheme(1);
+      context: context,
+      elevation: 10,
+      clipBehavior: Clip.antiAlias,
+      backgroundColor: bag,
+      enableDrag: true,
+      shape: const OutlineInputBorder(
+        borderSide: BorderSide.none,
+      ),
+      builder: (context) {
+        return SingleChildScrollView(
+          child: StatefulBuilder(
+            builder: (BuildContext context, setState) => SizedBox(
+              height: 170,
+              child: Column(
+                children: [
+                  Container(
+                    margin:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                    height: 45,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            updatetheme(1);
+                          },
+                          child: Customwidget(
+                              bag: const Color(0xffE2E2EF),
+                              fontc: Colors.black,
+                              id: 1),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            updatetheme(2);
+                          },
+                          child: Customwidget(
+                              bag: const Color(0xffE2E5EA),
+                              fontc: Colors.black,
+                              id: 2),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            updatetheme(3);
+                          },
+                          child: Customwidget(
+                              id: 3, bag: Colors.white, fontc: Colors.black),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            updatetheme(4);
+                          },
+                          child: Customwidget(
+                              id: 4, bag: Colors.black, fontc: Colors.white),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            updatetheme(5);
+                          },
+                          child: Customwidget(
+                              id: 5,
+                              bag: const Color(0xffffdedb),
+                              fontc: Colors.black),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Divider(
+                    thickness: 1,
+                    height: 0,
+                    indent: 0,
+                    color: Colors.grey,
+                  ),
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Column(
+                        children: [
+                          StatefulBuilder(
+                            builder:
+                                (BuildContext context, StateSetter setState) =>
+                                    Theme(
+                              data:
+                                  Theme.of(context).copyWith(canvasColor: bag),
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton<String>(
+                                    value: selectedFont,
+                                    isExpanded: true,
+                                    menuMaxHeight: 400,
+                                    onChanged: (newValue) {
+                                      selectedFont = newValue!;
+                                      selectedTextStyle =
+                                          GoogleFonts.getFont(selectedFont)
+                                              .fontFamily!;
+
+                                      setState(() {});
+                                      update();
                                     },
-                                    child: Customwidget(
-                                        bag: const Color(0xffE2E2EF),
-                                        fontc: Colors.black,
-                                        id: 1),
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      updatetheme(2);
-                                    },
-                                    child: Customwidget(
-                                        bag: const Color(0xffE2E5EA),
-                                        fontc: Colors.black,
-                                        id: 2),
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      updatetheme(3);
-                                    },
-                                    child: Customwidget(
-                                        id: 3,
-                                        bag: Colors.white,
-                                        fontc: Colors.black),
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      updatetheme(4);
-                                    },
-                                    child: Customwidget(
-                                        id: 4,
-                                        bag: Colors.black,
-                                        fontc: Colors.white),
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      updatetheme(5);
-                                    },
-                                    child: Customwidget(
-                                        id: 5,
-                                        bag: const Color(0xffffdedb),
-                                        fontc: Colors.black),
-                                  ),
-                                ],
+                                    items: fontNames
+                                        .map<DropdownMenuItem<String>>(
+                                            (String font) {
+                                      return DropdownMenuItem<String>(
+                                        value: font,
+                                        child: Text(font,
+                                            style: TextStyle(
+                                                color: selectedFont == font
+                                                    ? const Color(0xffcc2b73)
+                                                    : fontc,
+                                                fontWeight: selectedFont == font
+                                                    ? FontWeight.bold
+                                                    : FontWeight.normal)),
+                                      );
+                                    }).toList()),
                               ),
                             ),
-                            const Divider(
-                              thickness: 1,
-                              height: 0,
-                              indent: 0,
-                              color: Colors.grey,
-                            ),
-                            Expanded(
-                              child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 20),
-                                  child: Column(
-                                    children: [
-                                      StatefulBuilder(
-                                        builder: (BuildContext context,
-                                                StateSetter setState) =>
-                                            Theme(
-                                          data: Theme.of(context)
-                                              .copyWith(canvasColor: bag),
-                                          child: DropdownButtonHideUnderline(
-                                            child: DropdownButton<String>(
-                                                value: selectedFont,
-                                                isExpanded: true,
-                                                menuMaxHeight: 400,
-                                                onChanged: (newValue) {
-                                                  selectedFont = newValue!;
-                                                  selectedTextStyle =
-                                                      GoogleFonts.getFont(
-                                                              selectedFont)
-                                                          .fontFamily!;
-
-                                                  setState(() {});
-                                                  update();
-                                                },
-                                                items: fontNames.map<
-                                                    DropdownMenuItem<
-                                                        String>>((String font) {
-                                                  return DropdownMenuItem<
-                                                      String>(
-                                                    value: font,
-                                                    child: Text(font,
-                                                        style: TextStyle(
-                                                            color:
-                                                                selectedFont ==
-                                                                        font
-                                                                    ? const Color(
-                                                                        0xffcc2b73)
-                                                                    : fontc,
-                                                            fontWeight:
-                                                                selectedFont ==
-                                                                        font
-                                                                    ? FontWeight
-                                                                        .bold
-                                                                    : FontWeight
-                                                                        .normal)),
-                                                  );
-                                                }).toList()),
-                                          ),
-                                        ),
-                                      ),
-                                      Row(
-                                        children: [
-                                          Text(
-                                            "Aa",
-                                            style: TextStyle(
-                                                fontSize: 15,
-                                                color: fontc,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          Expanded(
-                                            child: Slider(
-                                              activeColor: themeid == 4
-                                                  ? Colors.grey.withOpacity(0.8)
-                                                  : Colors.blue,
-                                              value: _fontsizeprogress,
-                                              min: 0.0,
-                                              max: 50.0,
-                                              onChangeEnd: (double value) {
-                                                _fontsize = value;
-                                                update();
-                                              },
-                                              onChanged: (double value) {
-                                                _fontsizeprogress = value;
-                                                setState(() {});
-                                              },
-                                            ),
-                                          ),
-                                          Text(
-                                            "Aa",
-                                            style: TextStyle(
-                                                color: fontc,
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.bold),
-                                          )
-                                        ],
-                                      )
-                                    ],
-                                  )),
-                            ),
-                          ],
-                        ),
-                      )));
-        });
+                          ),
+                          Row(
+                            children: [
+                              Text(
+                                "Aa",
+                                style: TextStyle(
+                                    fontSize: 15,
+                                    color: fontc,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              Expanded(
+                                child: Slider(
+                                  activeColor: themeid == 4
+                                      ? Colors.grey.withOpacity(0.8)
+                                      : Colors.blue,
+                                  value: _fontsizeprogress,
+                                  min: 0.0,
+                                  max: 50.0,
+                                  onChangeEnd: (double value) {
+                                    _fontsize = value;
+                                    update();
+                                  },
+                                  onChanged: (double value) {
+                                    _fontsizeprogress = value;
+                                    setState(() {});
+                                  },
+                                ),
+                              ),
+                              Text(
+                                "Aa",
+                                style: TextStyle(
+                                    color: fontc,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold),
+                              )
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 
   updatetheme(int id) {
@@ -498,6 +488,7 @@ class Home extends State<ShowEpub> {
                 (widget.lastPlace?.chapterPercent ?? 0),
           );
           wasInit = false;
+          updateChapterInList();
         }
       }
     });
