@@ -170,7 +170,7 @@ class Home extends State<ShowEpub> {
     addDataToRepo();
     canBeRead = false;
     timer?.cancel();
-    final chapter = findBookChapter(epubBook.Chapters ?? []) ?? EpubChapter();
+    final chapter = findBookChapter();
     final duration = countReadDurationOfChapter(chapter);
     timer = Timer(duration, () {
       canBeRead = true;
@@ -205,27 +205,8 @@ class Home extends State<ShowEpub> {
     return content;
   }
 
-  EpubChapter? findBookChapter(List<EpubChapter> chapters) {
-    EpubChapter? bookChapter;
-    for (int i = 0; i < chapters.length; i++) {
-      final chapter = chapters[i];
-      String? chapterTitle = chapter.Title;
-
-      if (chapterTitle?.toLowerCase() == selectedchapter.toLowerCase()) {
-        bookChapter = bookChapter;
-
-        break;
-      } else {
-        List<EpubChapter> subChapters = chapter.SubChapters ?? [];
-        final result = findBookChapter(subChapters);
-        if (result != null) {
-          bookChapter = result;
-          break;
-        }
-      }
-    }
-    return bookChapter;
-  }
+  Chaptermodel findBookChapter() =>
+      realChapters.firstWhere((element) => element.title == selectedchapter);
 
   bool isThereChapter(String goalChapter) =>
       realChapters.any((element) => element.title == goalChapter);

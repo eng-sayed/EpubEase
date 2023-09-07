@@ -1,3 +1,4 @@
+import 'package:epubease/src/Model/chapter_model.dart';
 import 'package:epubease/src/core/utils/words_counter.dart';
 import 'package:epubx/epubx.dart';
 
@@ -17,9 +18,8 @@ double countProgress({
   return progress;
 }
 
-Duration countReadDurationOfChapter(EpubChapter chapter) {
-  final symbolsInChapter =
-      WordsCounter().countWordsInChapterAndSubChapters(chapter);
+Duration countReadDurationOfChapter(Chaptermodel chapter) {
+  final symbolsInChapter = chapter.symbolsCount;
   const symbolsPerSecond = 25;
   final normalReadSeconds = symbolsInChapter / symbolsPerSecond;
   const coef = 0.1;
