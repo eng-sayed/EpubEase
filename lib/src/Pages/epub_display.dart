@@ -1,9 +1,12 @@
+import 'dart:async';
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:epubease/src/Model/calculation_model.dart';
 import 'package:epubease/src/Model/last_place_model.dart';
 import 'package:epubease/src/Model/reader_result.dart';
 import 'package:epubease/src/core/utils/words_counter.dart';
+import 'package:epubease/src/data/repository.dart';
 import 'package:epubx/epubx.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/material.dart';
@@ -29,15 +32,17 @@ class ShowEpub extends StatefulWidget {
   EpubBook epubBook;
   List splithtml = [];
   final LastPlaceModel? lastPlace;
-  final List<LastPlaceModel> chaptersPercentages;
+  final List<Chaptermodel> realChapters;
   final htmlKey = GlobalKey<HtmlWidgetState>();
+  final Repository repository;
 
   ShowEpub({
     super.key,
     required this.html1,
     required this.epubBook,
     required this.lastPlace,
-    required this.chaptersPercentages,
+    required this.repository,
+    required this.realChapters,
   });
 
   @override
@@ -51,7 +56,7 @@ class Home extends State<ShowEpub> {
   bool change = false;
   bool show = false;
   final controller = ScrollController();
-  List<Chaptermodel> chapterslist1 = [];
+  late final List<Chaptermodel> realChapters;
   String selectedtext = '';
   String title = "";
   double _fontsizeprogress = 17.0;
@@ -59,6 +64,8 @@ class Home extends State<ShowEpub> {
   bool speak = false;
   String docid = "";
   bool wasInit = true;
+  late Timer timer;
+  bool canBeRead = false;
 
   String fontstyle = 'Montserrat-Medium'.toString();
 
@@ -85,6 +92,7 @@ class Home extends State<ShowEpub> {
   void initState() {
     htmlcontent = widget.html1;
     epubBook = widget.epubBook;
+    realChapters = widget.realChapters;
     allFonts = GoogleFonts.asMap().cast<String, String>();
     fontNames = allFonts.keys.toList();
     selectedFont = 'Abyssinica SIL';
@@ -92,7 +100,7 @@ class Home extends State<ShowEpub> {
     selectedchapter = getLastChapter();
     getTitleFromXhtml(widget.html1);
     updatecontent1();
-
+    updateChapterInList();
     super.initState();
   }
 
@@ -100,90 +108,70 @@ class Home extends State<ShowEpub> {
     if (widget.lastPlace != null) {
       final goalChapter = widget.lastPlace?.chapterTitle;
       if (goalChapter != null) {
-        if (isThereChapter(goalChapter, epubBook.Chapters ?? []) == true) {
+        if (isThereChapter(goalChapter)) {
           return goalChapter;
         }
       }
     }
-    final first = epubBook.Chapters!.firstOrNull;
+    final first = realChapters.firstOrNull;
 
-    return first?.Title ?? "";
+    return first?.title ?? "";
   }
 
   getTitleFromXhtml(String xhtml) {
-    controller.addListener(() async {
-      if (controller.position.userScrollDirection == ScrollDirection.forward &&
-          showheader == false) {
-        showheader = true;
-        setState(() {});
-      } else if (controller.position.userScrollDirection ==
-              ScrollDirection.reverse &&
-          showheader) {
-        showheader = false;
-        setState(() {});
-      }
-    });
+    controller.addListener(
+      () async {
+        if (controller.position.userScrollDirection ==
+                ScrollDirection.forward &&
+            showheader == false) {
+          showheader = true;
+          setState(() {});
+        } else if (controller.position.userScrollDirection ==
+                ScrollDirection.reverse &&
+            showheader) {
+          showheader = false;
+          setState(() {});
+        }
+        addDataToRepo();
+      },
+    );
     if (epubBook.Title != null) {
       booktitle = epubBook.Title!;
     }
 
     setState(() {});
-    showchapter();
   }
 
-  List<Chaptermodel> getAllChapters(EpubChapter chapter,
-      [bool isSubChapter = true]) {
-    List<Chaptermodel> subChapters = [];
-    subChapters.add(Chaptermodel(
-      chapter: chapter.Title!,
-      issubchapter: isSubChapter,
-      percent: 0,
-      subChapters: chapter.SubChapters.toChapterModels(),
-    ));
-    if (chapter.SubChapters == null || (chapter.SubChapters?.isEmpty ?? true)) {
-    } else {
-      for (var element in chapter.SubChapters!) {
-        final chapters = getAllChapters(element);
-        subChapters.addAll(chapters);
-      }
-    }
-
-    return subChapters;
-  }
-
-  void syncChapters() {
-    if (chapterslist1.length == widget.chaptersPercentages.length) {
-      for (int i = 0; i < chapterslist1.length; i++) {
-        chapterslist1[i] = chapterslist1[i].copyWith(
-          percent: widget.chaptersPercentages[i].chapterPercent,
-        );
-      }
-    }
-  }
-
-  showchapter() async {
-    epubBook.Chapters?.forEach((EpubChapter chapter) {
-      String? chapterTitle = chapter.Title;
-
-      List<Chaptermodel> subChapters = [];
-      subChapters.addAll(getAllChapters(chapter, false));
-
-      chapterslist1 += subChapters;
-    });
-    syncChapters();
+  void addDataToRepo() {
+    widget.repository.addData(
+      CalculationModel(
+        currentChapterPercent: getCurrentChapterPercent(),
+        bookChapters: epubBook.Chapters ?? [],
+        chapters: realChapters,
+        lastPlace: getCurrentLastPlace(),
+        selectedChapter: selectedchapter,
+        canBeRead: canBeRead,
+      ),
+    );
   }
 
   void updateChapterInList() {
-    final index = widget.chaptersPercentages
-        .indexWhere((element) => element.chapterTitle == selectedchapter);
-    widget.chaptersPercentages[index] =
-        widget.chaptersPercentages[index].copyWith(
-      chapterPercent: max(
-        getCurrentChapterPercent(),
-        widget.chaptersPercentages[index].chapterPercent ?? 0,
-      ),
-    );
-    syncChapters();
+    if (canBeRead) {
+      final index = widget.realChapters
+          .indexWhere((element) => element.title == selectedchapter);
+      widget.realChapters[index] = widget.realChapters[index].copyWith(
+        percent: max(
+          getCurrentChapterPercent(),
+          widget.realChapters[index].percent,
+        ),
+      );
+    }
+    addDataToRepo();
+    canBeRead = false;
+    timer.cancel();
+    timer = Timer(const Duration(seconds: 10), () {
+      canBeRead = true;
+    });
   }
 
   String? findChapter(List<EpubChapter> chapters) {
@@ -214,27 +202,8 @@ class Home extends State<ShowEpub> {
     return content;
   }
 
-  bool? isThereChapter(String goalChapter, List<EpubChapter> chapters) {
-    bool? success;
-    for (int i = 0; i < chapters.length; i++) {
-      final chapter = chapters[i];
-      String? chapterTitle = chapter.Title;
-
-      if (chapterTitle?.toLowerCase() == goalChapter.toLowerCase()) {
-        success = true;
-
-        break;
-      } else {
-        List<EpubChapter> subChapters = chapter.SubChapters ?? [];
-        final result = isThereChapter(goalChapter, subChapters);
-        if (result != null) {
-          success = result;
-          break;
-        }
-      }
-    }
-    return success;
-  }
+  bool isThereChapter(String goalChapter) =>
+      realChapters.any((element) => element.title == goalChapter);
 
   updatecontent1() async {
     String content = '';
@@ -242,15 +211,15 @@ class Home extends State<ShowEpub> {
     htmlcontent = findChapter(epubBook.Chapters ?? []) ?? "";
     print(htmlcontent);
 
-    int index = chapterslist1
-        .indexWhere((element) => element.chapter == selectedchapter);
+    int index =
+        realChapters.indexWhere((element) => element.title == selectedchapter);
     setState(() {
       if (index == 0) {
         showprevious = false;
       } else {
         showprevious = true;
       }
-      if (index == chapterslist1.length - 1) {
+      if (index == realChapters.length - 1) {
         shownext = false;
       } else {
         shownext = true;
@@ -274,9 +243,9 @@ class Home extends State<ShowEpub> {
         allResult.symbolsBefore;
     Navigator.of(context).pop(
       ReaderResult(
-        chapters: widget.chaptersPercentages,
+        chapters: widget.realChapters.toLastPlaces(),
         totalProgress: progress,
-        lactPlace: getCurrentLastPlace(),
+        lastPlace: getCurrentLastPlace(),
       ),
     );
 
@@ -284,12 +253,12 @@ class Home extends State<ShowEpub> {
   }
 
   LastPlaceModel getCurrentLastPlace() {
-    final chapter = widget.chaptersPercentages
-        .firstWhere((element) => element.chapterTitle == selectedchapter);
+    final chapter = widget.realChapters
+        .firstWhere((element) => element.title == selectedchapter);
     return LastPlaceModel(
       chapterPercent: getCurrentChapterPercent(),
       chapterTitle: selectedchapter,
-      chapterIndex: chapter.chapterIndex,
+      chapterIndex: chapter.index,
     );
   }
 
@@ -676,22 +645,21 @@ class Home extends State<ShowEpub> {
                                 visible: showprevious,
                                 child: IconButton(
                                     onPressed: () {
-                                      int index = chapterslist1.indexWhere(
+                                      int index = realChapters.indexWhere(
                                           (element) =>
-                                              element.chapter ==
-                                              selectedchapter);
+                                              element.title == selectedchapter);
                                       if (index != 0) {
                                         if (index - 2 >= 0 &&
-                                            chapterslist1[index - 2]
+                                            realChapters[index - 2]
                                                 .subChapters
                                                 .isNotEmpty) {
                                           updateChapterInList();
                                           selectedchapter =
-                                              chapterslist1[index - 2].chapter;
+                                              realChapters[index - 2].title;
                                         } else {
                                           updateChapterInList();
                                           selectedchapter =
-                                              chapterslist1[index - 1].chapter;
+                                              realChapters[index - 1].title;
                                         }
                                         updatecontent1();
                                       }
@@ -716,37 +684,35 @@ class Home extends State<ShowEpub> {
                                 ),
                               ),
                               Visibility(
-                                  visible: shownext,
-                                  child: IconButton(
-                                      onPressed: () {
-                                        int index = chapterslist1.indexWhere(
-                                            (element) =>
-                                                element.chapter ==
-                                                selectedchapter);
-                                        if (index != chapterslist1.length - 1) {
-                                          if (index + 2 <
-                                                  chapterslist1.length &&
-                                              chapterslist1[index]
-                                                  .subChapters
-                                                  .isNotEmpty) {
-                                            updateChapterInList();
-                                            selectedchapter =
-                                                chapterslist1[index + 2]
-                                                    .chapter;
-                                          } else {
-                                            updateChapterInList();
-                                            selectedchapter =
-                                                chapterslist1[index + 1]
-                                                    .chapter;
-                                          }
-                                          updatecontent1();
-                                        }
-                                      },
-                                      icon: Icon(
-                                        Icons.arrow_forward_ios_rounded,
-                                        size: 15,
-                                        color: fontc,
-                                      ))),
+                                visible: shownext,
+                                child: IconButton(
+                                  onPressed: () {
+                                    int index = realChapters.indexWhere(
+                                        (element) =>
+                                            element.title == selectedchapter);
+                                    if (index != realChapters.length - 1) {
+                                      if (index + 2 < realChapters.length &&
+                                          realChapters[index]
+                                              .subChapters
+                                              .isNotEmpty) {
+                                        updateChapterInList();
+                                        selectedchapter =
+                                            realChapters[index + 2].title;
+                                      } else {
+                                        updateChapterInList();
+                                        selectedchapter =
+                                            realChapters[index + 1].title;
+                                      }
+                                      updatecontent1();
+                                    }
+                                  },
+                                  icon: Icon(
+                                    Icons.arrow_forward_ios_rounded,
+                                    size: 15,
+                                    color: fontc,
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -770,11 +736,10 @@ class Home extends State<ShowEpub> {
                       elevation: 0,
                       leading: IconButton(
                         onPressed: () async {
-                          syncChapters();
                           bool updatecontent = await Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (context) => ChaptersList(
-                                chapters: chapterslist1,
+                                chapters: realChapters,
                                 beforeChapterChanged: () =>
                                     updateChapterInList(),
                               ),

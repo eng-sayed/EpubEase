@@ -2,9 +2,11 @@ library epubease;
 
 import 'dart:async';
 
+import 'package:epubease/src/Model/chapter_model.dart';
 import 'package:epubease/src/Model/last_place_model.dart';
 import 'package:epubease/src/Model/reader_result.dart';
 import 'package:epubease/src/core/utils/chapters_counter.dart';
+import 'package:epubease/src/data/repository.dart';
 import 'package:epubx/epubx.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -23,9 +25,9 @@ class Epubease {
   static Future<void> openAsset(
     String assetpath,
     BuildContext context, {
-    required LastPlaceModel? lastPlace,
-    required List<LastPlaceModel>? chapters,
+    required ReaderResult result,
     required Function(ReaderResult result) onClose,
+    required Function(ReaderResult result) onSave,
   }) async {
     var bytes = await rootBundle.load(assetpath);
 
@@ -39,8 +41,11 @@ class Epubease {
     }
 
     final chaptersPercentages =
-        dealWithChapters(chapters, epubBook.Chapters ?? []);
-    final realLastPlace = dealWithLastPlace(chaptersPercentages, lastPlace);
+        dealWithChapters(result.chapters, epubBook.Chapters ?? []);
+    final realLastPlace =
+        dealWithLastPlace(chaptersPercentages, result.lastPlace);
+
+    final repository = Repository(onSave: onSave, lastReadResult: result);
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       final result = await Navigator.push(
@@ -51,7 +56,8 @@ class Epubease {
               html1: htmlcontent,
               epubBook: epubBook,
               lastPlace: realLastPlace,
-              chaptersPercentages: chaptersPercentages,
+              repository: repository,
+              realChapters: chaptersPercentages,
             );
           },
         ),
@@ -63,9 +69,9 @@ class Epubease {
   static Future<void> open(
     String bookurl,
     BuildContext context, {
-    required LastPlaceModel? lastPlace,
-    required List<LastPlaceModel>? chapters,
+    required ReaderResult result,
     required Function(ReaderResult result) onClose,
+    required Function(ReaderResult result) onSave,
   }) async {
     final response = await http.get(Uri.parse(bookurl));
     if (response.statusCode == 200) {
@@ -82,8 +88,11 @@ class Epubease {
       }
 
       final chaptersPercentages =
-          dealWithChapters(chapters, epubBook.Chapters ?? []);
-      final realLastPlace = dealWithLastPlace(chaptersPercentages, lastPlace);
+          dealWithChapters(result.chapters, epubBook.Chapters ?? []);
+      final realLastPlace =
+          dealWithLastPlace(chaptersPercentages, result.lastPlace);
+
+      final repository = Repository(onSave: onSave, lastReadResult: result);
 
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
         final result = await Navigator.push(
@@ -93,8 +102,9 @@ class Epubease {
               return ShowEpub(
                 html1: htmlcontent,
                 epubBook: epubBook,
+                repository: repository,
                 lastPlace: realLastPlace,
-                chaptersPercentages: chaptersPercentages,
+                realChapters: chaptersPercentages,
               );
             },
           ),
@@ -105,30 +115,29 @@ class Epubease {
   }
 }
 
-List<LastPlaceModel> dealWithChapters(
-    List<LastPlaceModel>? chapters, List<EpubChapter> bookChapters) {
-  List<LastPlaceModel> resultChapters;
-  final countedChapters = ChaptersCounter().countChapters(bookChapters);
+List<Chaptermodel> dealWithChapters(
+  List<LastPlaceModel>? chapters,
+  List<EpubChapter> bookChapters,
+) {
+  final countedChapters = ChaptersCounter().getAllChapters(bookChapters);
+
   if (chapters != null &&
       chapters.isNotEmpty &&
       countedChapters.length == chapters.length) {
-    resultChapters = [...chapters];
-    for (int i = 0; i < resultChapters.length; i++) {
-      resultChapters[i] = resultChapters[i]
-          .copyWith(chapterTitle: countedChapters[i].chapterTitle);
+    for (int i = 0; i < countedChapters.length; i++) {
+      countedChapters[i] =
+          countedChapters[i].copyWith(percent: chapters[i].chapterPercent);
     }
-  } else {
-    resultChapters = countedChapters;
   }
-  return resultChapters;
+  return countedChapters;
 }
 
 LastPlaceModel? dealWithLastPlace(
-    List<LastPlaceModel> chapters, LastPlaceModel? lastPlace) {
+    List<Chaptermodel> chapters, LastPlaceModel? lastPlace) {
   if (lastPlace == null) {
     return lastPlace;
   }
-  final chapter = chapters
-      .firstWhere((element) => element.chapterIndex == lastPlace.chapterIndex);
-  return lastPlace.copyWith(chapterTitle: chapter.chapterTitle);
+  final chapter =
+      chapters.firstWhere((element) => element.index == lastPlace.chapterIndex);
+  return lastPlace.copyWith(chapterTitle: chapter.title);
 }

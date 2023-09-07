@@ -1,35 +1,52 @@
-import 'package:epubease/src/Model/last_place_model.dart';
+import 'package:epubease/src/Model/chapter_model.dart';
 import 'package:epubx/epubx.dart';
 
 class ChaptersCounter {
   var wasChapterFound = false;
 
   ChaptersCounter();
-  List<LastPlaceModel> countChapters(List<EpubChapter> chapters) {
-    final allChapters = <LastPlaceModel>[];
-    for (int i = 0; i < chapters.length; i++) {
-      final chapter = chapters[i];
-      allChapters.add(
-        LastPlaceModel(
-          chapterPercent: 0,
-          chapterTitle: chapter.Title,
-          chapterIndex: allChapters.length,
+
+  List<Chaptermodel> getAllChapters(List<EpubChapter> chapters) {
+    var list = <Chaptermodel>[];
+    for (var chapter in chapters) {
+      List<Chaptermodel> subChapters = [];
+      subChapters.addAll(
+        _getSubChapters(
+          chapter,
+          isSubChapter: false,
         ),
       );
-      final subChapters = countChapters(
-        chapter.SubChapters ?? [],
-      );
-      reindexPlaces(subChapters, allChapters.length);
-      allChapters.addAll(subChapters);
+
+      list += subChapters;
     }
-    return allChapters;
+    return list;
   }
 
-  void reindexPlaces(List<LastPlaceModel> models, int startIndex) {
-    for (int i = 0; i < models.length; i++) {
-      models[i] = models[i].copyWith(
-        chapterIndex: startIndex + (models[i].chapterIndex ?? 0),
-      );
+  List<Chaptermodel> _getSubChapters(EpubChapter chapter,
+      {bool isSubChapter = true, int startIndex = 0}) {
+    List<Chaptermodel> subChapters = [];
+    List<Chaptermodel> subSubChapters = [];
+
+    if (chapter.SubChapters != null &&
+        (chapter.SubChapters?.isNotEmpty ?? false)) {
+      for (var element in chapter.SubChapters!) {
+        final chapters = _getSubChapters(element,
+            startIndex: subChapters.length + subSubChapters.length);
+        subSubChapters.addAll(chapters);
+      }
     }
+
+    subChapters.add(
+      Chaptermodel(
+        title: chapter.Title!,
+        issubchapter: isSubChapter,
+        percent: 0,
+        subChapters: subSubChapters,
+        index: startIndex + subChapters.length,
+      ),
+    );
+    subChapters.addAll(subSubChapters);
+
+    return subChapters;
   }
 }

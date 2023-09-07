@@ -49,16 +49,16 @@ class ChaptersList extends StatelessWidget {
                   ListTile(
                     onTap: () {
                       beforeChapterChanged();
-                      selectedchapter = chapters[i].chapter;
+                      selectedchapter = chapters[i].title;
 
                       Navigator.of(context).pop(true);
                     },
                     title: Padding(
                       padding: EdgeInsets.only(
                           left: chapters[i].issubchapter ? 15 : 0),
-                      child: Text(chapters[i].chapter,
+                      child: Text(chapters[i].title,
                           style: TextStyle(
-                              color: selectedchapter == chapters[i].chapter
+                              color: selectedchapter == chapters[i].title
                                   ? const Color(0xffcc2b73)
                                   : fontc,
                               fontFamily:

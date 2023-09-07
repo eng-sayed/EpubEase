@@ -1,36 +1,35 @@
-import 'package:epubx/epubx.dart';
+import 'package:epubease/src/Model/last_place_model.dart';
 
 class Chaptermodel {
-  String chapter = '';
+  String title = '';
   bool issubchapter = false;
   List<Chaptermodel> subChapters;
   double percent;
+  int index;
   Chaptermodel({
-    required this.chapter,
+    required this.title,
+    required this.index,
     required this.issubchapter,
     required this.subChapters,
     required this.percent,
   });
   Chaptermodel copyWith({double? percent}) => Chaptermodel(
-        chapter: chapter,
+        title: title,
         issubchapter: issubchapter,
         subChapters: subChapters,
+        index: index,
         percent: percent ?? this.percent,
       );
 }
 
-extension ChapterExtension on List<EpubChapter>? {
-  List<Chaptermodel> toChapterModels() {
-    if (this != null) {
-      return this!
-          .map((chapter) => Chaptermodel(
-                chapter: chapter.Title ?? '',
-                issubchapter: true,
-                percent: 0,
-                subChapters: chapter.SubChapters.toChapterModels(),
-              ))
-          .toList();
-    }
-    return [];
+extension ChapterExtension on List<Chaptermodel> {
+  List<LastPlaceModel> toLastPlaces() {
+    return map(
+      (chapter) => LastPlaceModel(
+        chapterIndex: chapter.index,
+        chapterPercent: chapter.percent,
+        chapterTitle: chapter.title,
+      ),
+    ).toList();
   }
 }
