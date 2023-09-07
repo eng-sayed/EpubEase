@@ -231,10 +231,14 @@ class Home extends State<ShowEpub> {
 
   double getLastProgress() {
     final currentChapterPercent = getCurrentChapterPercent();
-    return countLastProgress(
-      selectedChapter: selectedchapter,
-      bookChapters: realChapters,
-      currentChapterPercent: currentChapterPercent,
+
+    return max(
+      countLastProgress(
+        selectedChapter: selectedchapter,
+        bookChapters: realChapters,
+        currentChapterPercent: currentChapterPercent,
+      ),
+      widget.repository.lastReadResult.lastProgress,
     );
   }
 
