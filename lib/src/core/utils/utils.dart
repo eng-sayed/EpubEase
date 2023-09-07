@@ -1,21 +1,32 @@
 import 'package:epubease/src/Model/chapter_model.dart';
 import 'package:epubease/src/core/utils/words_counter.dart';
-import 'package:epubx/epubx.dart';
 
-double countProgress({
+double countLastProgress({
   required String selectedChapter,
-  required List<EpubChapter> bookChapters,
+  required List<Chaptermodel> bookChapters,
   required double currentChapterPercent,
 }) {
   final wordsResult =
       WordsCounter().countWordsBefore(bookChapters, selectedChapter);
-  final allResult =
-      WordsCounter().countWordsBefore(bookChapters, "sdvsmkvmksmdcs");
+  final allResult = WordsCounter().countWordsBefore(bookChapters);
   final currentChapterProgress =
       currentChapterPercent * wordsResult.symbolsInCurrent;
   final progress = (wordsResult.symbolsBefore + currentChapterProgress) /
       allResult.symbolsBefore;
   return progress;
+}
+
+double countRealProgress({
+  required List<Chaptermodel> bookChapters,
+}) {
+  var readWords = 0.0;
+  var allWords = 0;
+
+  for (var chapter in bookChapters) {
+    allWords += chapter.symbolsCount;
+    readWords += chapter.symbolsCount * chapter.percent;
+  }
+  return readWords / allWords;
 }
 
 Duration countReadDurationOfChapter(Chaptermodel chapter) {

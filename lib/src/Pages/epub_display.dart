@@ -2,11 +2,9 @@ import 'dart:async';
 import 'dart:math';
 import 'dart:typed_data';
 
-import 'package:epubease/src/Model/calculation_model.dart';
 import 'package:epubease/src/Model/last_place_model.dart';
 import 'package:epubease/src/Model/reader_result.dart';
 import 'package:epubease/src/core/utils/utils.dart';
-import 'package:epubease/src/core/utils/words_counter.dart';
 import 'package:epubease/src/data/repository.dart';
 import 'package:epubx/epubx.dart';
 import 'package:flutter/rendering.dart';
@@ -145,13 +143,11 @@ class Home extends State<ShowEpub> {
 
   void addDataToRepo() {
     widget.repository.addData(
-      CalculationModel(
-        currentChapterPercent: getCurrentChapterPercent(),
-        bookChapters: epubBook.Chapters ?? [],
-        chapters: realChapters,
+      ReaderResult(
+        realProgress: getRealProgress(),
+        chapters: realChapters.toLastPlaces(),
         lastPlace: getCurrentLastPlace(),
-        selectedChapter: selectedchapter,
-        canBeRead: canBeRead,
+        lastProgress: getLastProgress(),
       ),
     );
   }
@@ -233,26 +229,36 @@ class Home extends State<ShowEpub> {
     controller.jumpTo(0);
   }
 
-  Future<bool> backpress() async {
+  double getLastProgress() {
     final currentChapterPercent = getCurrentChapterPercent();
-    updateChapterInList();
-
-    final progress = countProgress(
+    return countLastProgress(
       selectedChapter: selectedchapter,
-      bookChapters: epubBook.Chapters ?? [],
+      bookChapters: realChapters,
       currentChapterPercent: currentChapterPercent,
     );
-    final test1 =
-        WordsCounter().countWordsBeforeTest(realChapters, selectedchapter);
-    final test2 = WordsCounter().countWordsBeforeTest(realChapters);
+  }
+
+  double getRealProgress() => countRealProgress(
+        bookChapters: realChapters,
+      );
+
+  Future<bool> backpress() async {
+    updateChapterInList();
+
+    final progress = getLastProgress();
+    final realProgress = countRealProgress(
+      bookChapters: realChapters,
+    );
+
     Navigator.of(context).pop(
       ReaderResult(
         chapters: widget.realChapters.toLastPlaces(),
-        totalProgress: max(
+        lastProgress: max(
           progress,
-          widget.repository.lastReadResult.totalProgress,
+          widget.repository.lastReadResult.lastProgress,
         ),
         lastPlace: getCurrentLastPlace(),
+        realProgress: realProgress,
       ),
     );
 

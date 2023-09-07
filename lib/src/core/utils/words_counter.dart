@@ -8,36 +8,7 @@ class WordsCounter {
   var wasChapterFound = false;
   WordsCounter();
 
-  CountWordsResult countWordsBefore(
-      List<EpubChapter> chapters, String selectedchapter) {
-    var wordsBefore = 0;
-    int wordsInChapter = 0;
-    for (int i = 0; i < chapters.length; i++) {
-      final chapter = chapters[i];
-      if ((chapter.Title ?? "").toLowerCase() ==
-          selectedchapter.toLowerCase()) {
-        wasChapterFound = true;
-        wordsInChapter = countWordsInChapter(chapter);
-        break;
-      } else {
-        wordsBefore += countWordsInChapter(chapter);
-        final wordsInSubChapters =
-            countWordsBefore(chapter.SubChapters ?? [], selectedchapter);
-        wordsBefore += wordsInSubChapters.symbolsBefore;
-        wordsInChapter = wordsInSubChapters.symbolsInCurrent;
-
-        if (wasChapterFound) {
-          break;
-        }
-      }
-    }
-    return CountWordsResult(
-      symbolsBefore: wordsBefore,
-      symbolsInCurrent: wordsInChapter,
-    );
-  }
-
-  CountWordsResult countWordsBeforeTest(List<Chaptermodel> chapters,
+  CountWordsResult countWordsBefore(List<Chaptermodel> chapters,
       [String? selectedchapter]) {
     final index = selectedchapter != null
         ? chapters.indexWhere((element) => element.title == selectedchapter)
@@ -52,15 +23,6 @@ class WordsCounter {
       symbolsBefore: count,
       symbolsInCurrent: chapterCount,
     );
-  }
-
-  int countWordsInChapterAndSubChapters(EpubChapter chapter) {
-    final wordsInChapter = countWordsInChapter(chapter);
-    var wordsInSubChapters = 0;
-    chapter.SubChapters?.forEach((element) {
-      wordsInSubChapters += countWordsInChapterAndSubChapters(element);
-    });
-    return wordsInChapter + wordsInSubChapters;
   }
 
   int countWordsInChapter(EpubChapter chapter) {
