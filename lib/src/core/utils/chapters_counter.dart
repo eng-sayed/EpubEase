@@ -16,6 +16,7 @@ class ChaptersCounter {
         _getSubChapters(
           chapter,
           isSubChapter: false,
+          startIndex: list.length,
         ),
       );
 
