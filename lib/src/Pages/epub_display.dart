@@ -170,6 +170,7 @@ class Home extends State<ShowEpub> {
     final duration = countReadDurationOfChapter(chapter);
     timer = Timer(duration, () {
       canBeRead = true;
+      addDataToRepo();
     });
   }
 
@@ -231,15 +232,19 @@ class Home extends State<ShowEpub> {
 
   double getLastProgress() {
     final currentChapterPercent = getCurrentChapterPercent();
-
-    return max(
-      countLastProgress(
-        selectedChapter: selectedchapter,
-        bookChapters: realChapters,
-        currentChapterPercent: currentChapterPercent,
-      ),
-      widget.repository.lastReadResult.lastProgress,
+    final counted = countLastProgress(
+      selectedChapter: selectedchapter,
+      bookChapters: realChapters,
+      currentChapterPercent: currentChapterPercent,
     );
+    if (canBeRead) {
+      return max(
+        counted,
+        widget.repository.lastReadResult.lastProgress,
+      );
+    } else {
+      return widget.repository.lastReadResult.lastProgress;
+    }
   }
 
   double getRealProgress() => countRealProgress(
