@@ -34,7 +34,8 @@ class ChaptersCounter {
         (chapter.SubChapters?.isNotEmpty ?? false)) {
       for (var element in chapter.SubChapters!) {
         final chapters = _getSubChapters(element,
-            startIndex: subChapters.length + subSubChapters.length);
+            startIndex:
+                startIndex + subChapters.length + subSubChapters.length + 1);
         subSubChapters.addAll(chapters);
       }
     }
