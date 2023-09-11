@@ -171,6 +171,7 @@ class Home extends State<ShowEpub> {
     timer = Timer(duration, () {
       canBeRead = true;
       addDataToRepo();
+      timer?.cancel();
     });
   }
 
@@ -252,10 +253,9 @@ class Home extends State<ShowEpub> {
       );
 
   Future<bool> backpress() async {
-    updateChapterInList();
-    addDataToRepo();
-
     final progress = getLastProgress();
+    updateChapterInList();
+
     final realProgress = countRealProgress(
       bookChapters: realChapters,
     );
