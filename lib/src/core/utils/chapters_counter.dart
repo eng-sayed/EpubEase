@@ -16,26 +16,29 @@ class ChaptersCounter {
         _getSubChapters(
           chapter,
           isSubChapter: false,
-          startIndex: list.length,
         ),
       );
 
       list += subChapters;
     }
+
+    for (int i = 0; i < list.length; i++) {
+      list[i] = list[i].copyWith(index: i);
+    }
     return list;
   }
 
   List<Chaptermodel> _getSubChapters(EpubChapter chapter,
-      {bool isSubChapter = true, int startIndex = 0}) {
+      {bool isSubChapter = true}) {
     List<Chaptermodel> subChapters = [];
     List<Chaptermodel> subSubChapters = [];
 
     if (chapter.SubChapters != null &&
         (chapter.SubChapters?.isNotEmpty ?? false)) {
       for (var element in chapter.SubChapters!) {
-        final chapters = _getSubChapters(element,
-            startIndex:
-                startIndex + subChapters.length + subSubChapters.length + 1);
+        final chapters = _getSubChapters(
+          element,
+        );
         subSubChapters.addAll(chapters);
       }
     }
@@ -46,7 +49,7 @@ class ChaptersCounter {
         issubchapter: isSubChapter,
         percent: 0,
         subChapters: subSubChapters,
-        index: startIndex + subChapters.length,
+        index: 0,
         symbolsCount: wordsCounter.countWordsInChapter(chapter),
       ),
     );
