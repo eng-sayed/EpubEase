@@ -28,6 +28,7 @@ class Epubease {
     required ReaderResult result,
     required Function(ReaderResult result) onClose,
     required Function(ReaderResult result) onSave,
+    required Future<dynamic> Function(Widget reader) pushReader,
   }) async {
     var bytes = await rootBundle.load(assetpath);
 
@@ -48,20 +49,16 @@ class Epubease {
     final repository = Repository(onSave: onSave, lastReadResult: result);
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      final result = await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) {
-            return ShowEpub(
-              html1: htmlcontent,
-              epubBook: epubBook,
-              lastPlace: realLastPlace,
-              repository: repository,
-              realChapters: chaptersPercentages,
-            );
-          },
+      final result = await pushReader(
+        ShowEpub(
+          html1: htmlcontent,
+          epubBook: epubBook,
+          lastPlace: realLastPlace,
+          repository: repository,
+          realChapters: chaptersPercentages,
         ),
       );
+
       onClose(result);
     });
   }
@@ -72,6 +69,7 @@ class Epubease {
     required ReaderResult result,
     required Function(ReaderResult result) onClose,
     required Function(ReaderResult result) onSave,
+    required Future<dynamic> Function(Widget reader) pushReader,
   }) async {
     final response = await http.get(Uri.parse(bookurl));
     if (response.statusCode == 200) {
@@ -95,18 +93,13 @@ class Epubease {
       final repository = Repository(onSave: onSave, lastReadResult: result);
 
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-        final result = await Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) {
-              return ShowEpub(
-                html1: htmlcontent,
-                epubBook: epubBook,
-                repository: repository,
-                lastPlace: realLastPlace,
-                realChapters: chaptersPercentages,
-              );
-            },
+        final result = await pushReader(
+          ShowEpub(
+            html1: htmlcontent,
+            epubBook: epubBook,
+            lastPlace: realLastPlace,
+            repository: repository,
+            realChapters: chaptersPercentages,
           ),
         );
         onClose(result);
