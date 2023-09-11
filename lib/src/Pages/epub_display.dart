@@ -253,6 +253,7 @@ class Home extends State<ShowEpub> {
 
   Future<bool> backpress() async {
     updateChapterInList();
+    addDataToRepo();
 
     final progress = getLastProgress();
     final realProgress = countRealProgress(
