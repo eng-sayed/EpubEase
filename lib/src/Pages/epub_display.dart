@@ -103,6 +103,14 @@ class Home extends State<ShowEpub> {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    controller.dispose();
+    timer?.cancel();
+
+    super.dispose();
+  }
+
   String getLastChapter() {
     if (widget.lastPlace != null) {
       final goalChapter = widget.lastPlace?.chapterTitle;
