@@ -23,7 +23,7 @@ class ChaptersCounter {
     }
 
     for (int i = 0; i < list.length; i++) {
-      list[i] = list[i].copyWith(index: i);
+      list[i] = list[i].copyWith(index: i + 1);
     }
     return list;
   }
