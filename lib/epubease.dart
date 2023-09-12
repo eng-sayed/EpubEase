@@ -65,7 +65,7 @@ class Epubease {
           onClose(result);
         });
       }
-      throw HttpException(response.body);
+      throw HttpException(response.reasonPhrase ?? "Something went wrong");
     } on HttpException catch (e) {
       onError(e.message);
     } catch (e) {
