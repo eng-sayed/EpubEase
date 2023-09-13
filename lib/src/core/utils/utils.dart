@@ -9,8 +9,17 @@ double countLastProgress({
   final wordsResult =
       WordsCounter().countWordsBefore(bookChapters, selectedChapter);
   final allResult = WordsCounter().countWordsBefore(bookChapters);
-  final currentChapterProgress =
-      currentChapterPercent * wordsResult.symbolsInCurrent;
+  final chapter =
+      bookChapters.firstWhere((element) => element.title == selectedChapter);
+
+  late final double currentChapterProgress;
+  if (chapter.subChapters.isEmpty) {
+    currentChapterProgress =
+        currentChapterPercent * wordsResult.symbolsInCurrent;
+  } else {
+    currentChapterProgress =
+        countRealProgress(bookChapters: chapter.subChapters);
+  }
   final progress = (wordsResult.symbolsBefore + currentChapterProgress) /
       allResult.symbolsBefore;
   return progress;
@@ -23,8 +32,10 @@ double countRealProgress({
   var allWords = 0;
 
   for (var chapter in bookChapters) {
-    allWords += chapter.symbolsCount;
-    readWords += chapter.symbolsCount * chapter.percent;
+    if (chapter.subChapters.isEmpty) {
+      allWords += chapter.symbolsCount;
+      readWords += chapter.symbolsCount * chapter.percent;
+    }
   }
   return readWords / allWords;
 }

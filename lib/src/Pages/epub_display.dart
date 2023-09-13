@@ -160,18 +160,39 @@ class Home extends State<ShowEpub> {
     );
   }
 
+  void onChapterChanged() {
+    updateChapterInList();
+    addDataToRepo();
+    rerunTimer();
+  }
+
   void updateChapterInList() {
     if (canBeRead) {
       final index = widget.realChapters
           .indexWhere((element) => element.title == selectedchapter);
-      widget.realChapters[index] = widget.realChapters[index].copyWith(
-        percent: max(
-          getCurrentChapterPercent(),
-          widget.realChapters[index].percent,
-        ),
+      final chapter = widget.realChapters[index];
+      final chapterPercent = max(
+        chapter.subChapters.isEmpty
+            ? getCurrentChapterPercent()
+            : getRealProgress(chapter.subChapters),
+        widget.realChapters[index].percent,
       );
+      widget.realChapters[index] =
+          widget.realChapters[index].copyWith(percent: chapterPercent);
+      if (chapter.subChapters.isNotEmpty) {
+        widget.realChapters[index + 1] =
+            widget.realChapters[index + 1].copyWith(
+          percent: max(
+            getCurrentChapterPercent(),
+            widget.realChapters[index].percent,
+          ),
+        );
+      }
+      updateParentIfExists(chapter);
     }
-    addDataToRepo();
+  }
+
+  void rerunTimer() {
     canBeRead = false;
     timer?.cancel();
     final chapter = findBookChapter();
@@ -181,6 +202,17 @@ class Home extends State<ShowEpub> {
       addDataToRepo();
       timer?.cancel();
     });
+  }
+
+  void updateParentIfExists(Chaptermodel chapter) {
+    if (chapter.issubchapter) {
+      final index = realChapters.lastIndexWhere((element) =>
+          element.subChapters.isNotEmpty && element.index < chapter.index);
+      final parentChapter = realChapters[index];
+      realChapters[index] = parentChapter.copyWith(
+        percent: getRealProgress(parentChapter.subChapters),
+      );
+    }
   }
 
   String? findChapter(List<EpubChapter> chapters) {
@@ -256,13 +288,14 @@ class Home extends State<ShowEpub> {
     }
   }
 
-  double getRealProgress() => countRealProgress(
-        bookChapters: realChapters,
+  double getRealProgress([List<Chaptermodel>? chapters]) => countRealProgress(
+        bookChapters: chapters ?? realChapters,
       );
 
   Future<bool> backpress() async {
-    final progress = getLastProgress();
     updateChapterInList();
+    addDataToRepo();
+    final progress = getLastProgress();
 
     final realProgress = countRealProgress(
       bookChapters: realChapters,
@@ -519,7 +552,7 @@ class Home extends State<ShowEpub> {
                 (widget.lastPlace?.chapterPercent ?? 0),
           );
           wasInit = false;
-          updateChapterInList();
+          onChapterChanged();
         }
       }
     });
@@ -569,7 +602,7 @@ class Home extends State<ShowEpub> {
                                                   .split(".xhtml")
                                                   .first;
                                               int number = int.parse(break1);
-                                              updateChapterInList();
+                                              onChapterChanged();
                                               selectedchapter =
                                                   s1.first + number.toString();
                                               updatecontent1();
@@ -675,11 +708,11 @@ class Home extends State<ShowEpub> {
                                             realChapters[index - 2]
                                                 .subChapters
                                                 .isNotEmpty) {
-                                          updateChapterInList();
+                                          onChapterChanged();
                                           selectedchapter =
                                               realChapters[index - 2].title;
                                         } else {
-                                          updateChapterInList();
+                                          onChapterChanged();
                                           selectedchapter =
                                               realChapters[index - 1].title;
                                         }
@@ -717,11 +750,11 @@ class Home extends State<ShowEpub> {
                                           realChapters[index]
                                               .subChapters
                                               .isNotEmpty) {
-                                        updateChapterInList();
+                                        onChapterChanged();
                                         selectedchapter =
                                             realChapters[index + 2].title;
                                       } else {
-                                        updateChapterInList();
+                                        onChapterChanged();
                                         selectedchapter =
                                             realChapters[index + 1].title;
                                       }
@@ -762,8 +795,7 @@ class Home extends State<ShowEpub> {
                             MaterialPageRoute(
                               builder: (context) => ChaptersList(
                                 chapters: realChapters,
-                                beforeChapterChanged: () =>
-                                    updateChapterInList(),
+                                beforeChapterChanged: () => onChapterChanged(),
                               ),
                             ),
                           );

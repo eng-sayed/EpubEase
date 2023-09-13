@@ -15,7 +15,9 @@ class WordsCounter {
         : chapters.length;
     var count = 0;
     for (int i = 0; i < index; i++) {
-      count += chapters[i].symbolsCount;
+      if (chapters[i].subChapters.isEmpty) {
+        count += chapters[i].symbolsCount;
+      }
     }
     final chapterCount =
         selectedchapter != null ? chapters[index].symbolsCount : 0;
