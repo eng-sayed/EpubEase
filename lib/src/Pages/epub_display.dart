@@ -166,6 +166,9 @@ class Home extends State<ShowEpub> {
     rerunTimer();
   }
 
+  List<Chaptermodel> getSubSchapters(Chaptermodel chapter) => realChapters
+      .sublist(chapter.index, chapter.index + chapter.subChapters.length);
+
   void updateChapterInList() {
     if (canBeRead) {
       final index = widget.realChapters
@@ -174,7 +177,7 @@ class Home extends State<ShowEpub> {
       final chapterPercent = max(
         chapter.subChapters.isEmpty
             ? getCurrentChapterPercent()
-            : getRealProgress(chapter.subChapters),
+            : getRealProgress(getSubSchapters(chapter)),
         widget.realChapters[index].percent,
       );
       widget.realChapters[index] =
@@ -210,7 +213,7 @@ class Home extends State<ShowEpub> {
           element.subChapters.isNotEmpty && element.index < chapter.index);
       final parentChapter = realChapters[index];
       realChapters[index] = parentChapter.copyWith(
-        percent: getRealProgress(parentChapter.subChapters),
+        percent: getRealProgress(getSubSchapters(parentChapter)),
       );
     }
   }
