@@ -19,6 +19,7 @@ class ArrowBackButton extends StatelessWidget {
       icon: SvgPicture.string(
         arrowSvg,
         height: 24,
+        colorFilter: const ColorFilter.mode(Colors.black, BlendMode.srcIn),
         width: 24,
       ),
     );
