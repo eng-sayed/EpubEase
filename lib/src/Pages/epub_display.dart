@@ -798,7 +798,7 @@ class Home extends State<ShowEpub> {
                         backgroundColor: bag,
                         elevation: 0,
                         leading: IconButton(
-                          onPressed: Navigator.of(context).pop,
+                          onPressed: backpress,
                           icon: Icon(
                             Icons.arrow_back_ios,
                             color: fontc,
