@@ -562,276 +562,269 @@ class Home extends State<ShowEpub> {
 
     return WillPopScope(
       onWillPop: backpress,
-      child: SafeArea(
-        child: Scaffold(
-          body: Container(
-              color: bag,
-              height: MediaQuery.of(context).size.height,
-              child: Stack(
-                children: [
-                  Column(
-                    children: [
-                      Expanded(
-                          child: Stack(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 5, vertical: 10),
-                            child: Scrollbar(
-                              controller: controller,
-                              child: Container(
-                                  padding: const EdgeInsets.only(
-                                      left: 8, right: 3, top: 50),
-                                  alignment: Alignment.center,
-                                  child: SelectionArea(
-                                    onSelectionChanged: (value) => print(value),
-                                    child: HtmlWidget(
-                                      htmlcontent,
-                                      key: widget.htmlKey,
-                                      buildAsync: true,
-                                      renderMode:
-                                          ListViewMode(controller: controller),
-                                      factoryBuilder: () =>
-                                          _CustomWidgetFactory(
-                                              book: widget.epubBook),
-                                      onTapUrl: (String? s) async {
-                                        if (s != null && s == "a") {
-                                          if (s.contains("chapter")) {
-                                            setState(() {
-                                              var s1 = s.split("-0");
-                                              String break1 = s1
-                                                  .toList()
-                                                  .last
-                                                  .split(".xhtml")
-                                                  .first;
-                                              int number = int.parse(break1);
-                                              onChapterChanged();
-                                              selectedchapter =
-                                                  s1.first + number.toString();
-                                              updatecontent1();
-                                            });
+      child: Builder(builder: (context) {
+        return SafeArea(
+          child: Scaffold(
+            body: Container(
+                color: bag,
+                height: MediaQuery.of(context).size.height,
+                child: Stack(
+                  children: [
+                    Column(
+                      children: [
+                        Expanded(
+                            child: Stack(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 5, vertical: 10),
+                              child: Scrollbar(
+                                controller: controller,
+                                child: Container(
+                                    padding: const EdgeInsets.only(
+                                        left: 8, right: 3, top: 50),
+                                    alignment: Alignment.center,
+                                    child: SelectionArea(
+                                      onSelectionChanged: (value) =>
+                                          print(value),
+                                      child: HtmlWidget(
+                                        htmlcontent,
+                                        key: widget.htmlKey,
+                                        buildAsync: true,
+                                        renderMode: ListViewMode(
+                                            controller: controller),
+                                        factoryBuilder: () =>
+                                            _CustomWidgetFactory(
+                                                book: widget.epubBook),
+                                        onTapUrl: (String? s) async {
+                                          if (s != null && s == "a") {
+                                            if (s.contains("chapter")) {
+                                              setState(() {
+                                                var s1 = s.split("-0");
+                                                String break1 = s1
+                                                    .toList()
+                                                    .last
+                                                    .split(".xhtml")
+                                                    .first;
+                                                int number = int.parse(break1);
+                                                onChapterChanged();
+                                                selectedchapter = s1.first +
+                                                    number.toString();
+                                                updatecontent1();
+                                              });
+                                            }
                                           }
-                                        }
-                                        return true;
-                                      },
-                                      textStyle: TextStyle(
-                                          fontSize: _fontsize,
-                                          fontFamily: selectedTextStyle,
-                                          color: fontc),
-                                    ),
-                                  )),
+                                          return true;
+                                        },
+                                        textStyle: TextStyle(
+                                            fontSize: _fontsize,
+                                            fontFamily: selectedTextStyle,
+                                            color: fontc),
+                                      ),
+                                    )),
+                              ),
                             ),
-                          ),
-                          //)
+                            //)
 
-                          Align(
-                            alignment: Alignment.bottomRight,
-                            child: Visibility(
-                              visible: show,
-                              child: Container(
-                                  height: 150,
-                                  width: 30,
-                                  alignment: Alignment.bottomCenter,
-                                  margin: const EdgeInsets.only(
-                                      bottom: 40, right: 15),
-                                  child: Column(
-                                    children: [
-                                      Icon(
-                                        Icons.brightness_7,
+                            Align(
+                              alignment: Alignment.bottomRight,
+                              child: Visibility(
+                                visible: show,
+                                child: Container(
+                                    height: 150,
+                                    width: 30,
+                                    alignment: Alignment.bottomCenter,
+                                    margin: const EdgeInsets.only(
+                                        bottom: 40, right: 15),
+                                    child: Column(
+                                      children: [
+                                        Icon(
+                                          Icons.brightness_7,
+                                          size: 15,
+                                          color: fontc,
+                                        ),
+                                        SizedBox(
+                                          height: 120,
+                                          width: 30,
+                                          child: RotatedBox(
+                                              quarterTurns: -1,
+                                              child: SliderTheme(
+                                                  data: SliderThemeData(
+                                                    activeTrackColor:
+                                                        themeid == 4
+                                                            ? Colors.white
+                                                            : Colors.blue,
+                                                    disabledThumbColor:
+                                                        Colors.transparent,
+                                                    inactiveTrackColor: Colors
+                                                        .grey
+                                                        .withOpacity(0.5),
+                                                    trackHeight: 5.0,
+
+                                                    thumbColor: themeid == 4
+                                                        ? Colors.grey
+                                                            .withOpacity(0.8)
+                                                        : Colors.blue,
+                                                    thumbShape:
+                                                        const RoundSliderThumbShape(
+                                                            enabledThumbRadius:
+                                                                0.0),
+                                                    // Adjust the size of the thumb
+                                                    overlayShape:
+                                                        const RoundSliderOverlayShape(
+                                                            overlayRadius:
+                                                                10.0), // Adjust the size of the overlay
+                                                  ),
+                                                  child: Slider(
+                                                    value: brightnessLevel,
+                                                    min: 0.0,
+                                                    max: 1.0,
+                                                    onChangeEnd:
+                                                        (double value) {
+                                                      setBrightness(value);
+                                                    },
+                                                    onChanged: (double value) {
+                                                      setState(() {
+                                                        brightnessLevel = value;
+                                                      });
+                                                    },
+                                                  ))),
+                                        ),
+                                      ],
+                                    )),
+                              ),
+                            )
+                          ],
+                        )),
+                        if (selectedchapter.isNotEmpty) ...[
+                          Container(
+                            height: 35,
+                            alignment: Alignment.center,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Visibility(
+                                  visible: showprevious,
+                                  child: IconButton(
+                                      onPressed: () {
+                                        int index = realChapters.indexWhere(
+                                            (element) =>
+                                                element.title ==
+                                                selectedchapter);
+                                        if (index != 0) {
+                                          if (index - 2 >= 0 &&
+                                              realChapters[index - 2]
+                                                  .subChapters
+                                                  .isNotEmpty) {
+                                            onChapterChanged();
+                                            selectedchapter =
+                                                realChapters[index - 2].title;
+                                          } else {
+                                            onChapterChanged();
+                                            selectedchapter =
+                                                realChapters[index - 1].title;
+                                          }
+                                          updatecontent1();
+                                        }
+                                      },
+                                      icon: Icon(
+                                        Icons.arrow_back_ios,
                                         size: 15,
                                         color: fontc,
-                                      ),
-                                      SizedBox(
-                                        height: 120,
-                                        width: 30,
-                                        child: RotatedBox(
-                                            quarterTurns: -1,
-                                            child: SliderTheme(
-                                                data: SliderThemeData(
-                                                  activeTrackColor: themeid == 4
-                                                      ? Colors.white
-                                                      : Colors.blue,
-                                                  disabledThumbColor:
-                                                      Colors.transparent,
-                                                  inactiveTrackColor: Colors
-                                                      .grey
-                                                      .withOpacity(0.5),
-                                                  trackHeight: 5.0,
-
-                                                  thumbColor: themeid == 4
-                                                      ? Colors.grey
-                                                          .withOpacity(0.8)
-                                                      : Colors.blue,
-                                                  thumbShape:
-                                                      const RoundSliderThumbShape(
-                                                          enabledThumbRadius:
-                                                              0.0),
-                                                  // Adjust the size of the thumb
-                                                  overlayShape:
-                                                      const RoundSliderOverlayShape(
-                                                          overlayRadius:
-                                                              10.0), // Adjust the size of the overlay
-                                                ),
-                                                child: Slider(
-                                                  value: brightnessLevel,
-                                                  min: 0.0,
-                                                  max: 1.0,
-                                                  onChangeEnd: (double value) {
-                                                    setBrightness(value);
-                                                  },
-                                                  onChanged: (double value) {
-                                                    setState(() {
-                                                      brightnessLevel = value;
-                                                    });
-                                                  },
-                                                ))),
-                                      ),
-                                    ],
-                                  )),
-                            ),
-                          )
-                        ],
-                      )),
-                      if (selectedchapter.isNotEmpty) ...[
-                        Container(
-                          height: 35,
-                          alignment: Alignment.center,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Visibility(
-                                visible: showprevious,
-                                child: IconButton(
+                                      )),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    selectedchapter,
+                                    maxLines: 1,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        overflow: TextOverflow.ellipsis,
+                                        fontFamily: selectedTextStyle,
+                                        fontWeight: FontWeight.bold,
+                                        color: fontc),
+                                  ),
+                                ),
+                                Visibility(
+                                  visible: shownext,
+                                  child: IconButton(
                                     onPressed: () {
                                       int index = realChapters.indexWhere(
                                           (element) =>
                                               element.title == selectedchapter);
-                                      if (index != 0) {
-                                        if (index - 2 >= 0 &&
-                                            realChapters[index - 2]
+                                      if (index != realChapters.length - 1) {
+                                        if (index + 2 < realChapters.length &&
+                                            realChapters[index]
                                                 .subChapters
                                                 .isNotEmpty) {
                                           onChapterChanged();
                                           selectedchapter =
-                                              realChapters[index - 2].title;
+                                              realChapters[index + 2].title;
                                         } else {
                                           onChapterChanged();
                                           selectedchapter =
-                                              realChapters[index - 1].title;
+                                              realChapters[index + 1].title;
                                         }
                                         updatecontent1();
                                       }
                                     },
                                     icon: Icon(
-                                      Icons.arrow_back_ios,
+                                      Icons.arrow_forward_ios_rounded,
                                       size: 15,
                                       color: fontc,
-                                    )),
-                              ),
-                              Expanded(
-                                child: Text(
-                                  selectedchapter,
-                                  maxLines: 1,
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      fontSize: 15,
-                                      overflow: TextOverflow.ellipsis,
-                                      fontFamily: selectedTextStyle,
-                                      fontWeight: FontWeight.bold,
-                                      color: fontc),
-                                ),
-                              ),
-                              Visibility(
-                                visible: shownext,
-                                child: IconButton(
-                                  onPressed: () {
-                                    int index = realChapters.indexWhere(
-                                        (element) =>
-                                            element.title == selectedchapter);
-                                    if (index != realChapters.length - 1) {
-                                      if (index + 2 < realChapters.length &&
-                                          realChapters[index]
-                                              .subChapters
-                                              .isNotEmpty) {
-                                        onChapterChanged();
-                                        selectedchapter =
-                                            realChapters[index + 2].title;
-                                      } else {
-                                        onChapterChanged();
-                                        selectedchapter =
-                                            realChapters[index + 1].title;
-                                      }
-                                      updatecontent1();
-                                    }
-                                  },
-                                  icon: Icon(
-                                    Icons.arrow_forward_ios_rounded,
-                                    size: 15,
-                                    color: fontc,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ]
-                    ],
-                  ),
-                  AnimatedContainer(
-                    height: showheader ? 50 : 0,
-                    duration: const Duration(milliseconds: 10),
-                    color: bag,
-                    child: AppBar(
-                      centerTitle: true,
-                      title: Text(
-                        booktitle,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 17,
-                            color: fontc),
-                      ),
-                      backgroundColor: bag,
-                      elevation: 0,
-                      leading: IconButton(
-                        onPressed: () async {
-                          bool updatecontent = await Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => ChaptersList(
-                                chapters: realChapters,
-                                beforeChapterChanged: () => onChapterChanged(),
-                              ),
-                            ),
-                          );
-                          if (updatecontent) {
-                            updatecontent1();
-                          }
-                        },
-                        icon: Icon(
-                          Icons.menu,
-                          color: fontc,
-                        ),
-                      ),
-                      actions: [
-                        InkWell(
-                          onTap: () {
-                            updatefontsettings();
-                          },
-                          child: Container(
-                            width: 40,
-                            alignment: Alignment.center,
-                            child: Text(
-                              "Aa",
-                              style: TextStyle(
-                                  fontSize: 20,
-                                  color: fontc,
-                                  fontWeight: FontWeight.bold),
+                              ],
                             ),
                           ),
+                        ]
+                      ],
+                    ),
+                    AnimatedContainer(
+                      height: showheader ? 50 : 0,
+                      duration: const Duration(milliseconds: 10),
+                      color: bag,
+                      child: AppBar(
+                        centerTitle: true,
+                        title: Text(
+                          booktitle,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 17,
+                              color: fontc),
                         ),
-                        const SizedBox(
-                          width: 5,
+                        backgroundColor: bag,
+                        elevation: 0,
+                        leading: IconButton(
+                          onPressed: Navigator.of(context).pop,
+                          icon: Icon(
+                            Icons.arrow_back_ios,
+                            color: fontc,
+                          ),
                         ),
-                        InkWell(
+                        actions: [
+                          InkWell(
+                            onTap: () {
+                              updatefontsettings();
+                            },
+                            child: Container(
+                              width: 40,
+                              alignment: Alignment.center,
+                              child: Text(
+                                "Aa",
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    color: fontc,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 5,
+                          ),
+                          InkWell(
                             onTap: () async {
                               setState(() {
                                 show = true;
@@ -845,17 +838,43 @@ class Home extends State<ShowEpub> {
                               Icons.brightness_high_sharp,
                               size: 20,
                               color: fontc,
-                            )),
-                        const SizedBox(
-                          width: 10,
-                        )
-                      ],
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 5,
+                          ),
+                          IconButton(
+                            onPressed: () async {
+                              bool updatecontent =
+                                  await Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => ChaptersList(
+                                    chapters: realChapters,
+                                    beforeChapterChanged: () =>
+                                        onChapterChanged(),
+                                  ),
+                                ),
+                              );
+                              if (updatecontent) {
+                                updatecontent1();
+                              }
+                            },
+                            icon: Icon(
+                              Icons.menu,
+                              color: fontc,
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          )
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              )),
-        ),
-      ),
+                  ],
+                )),
+          ),
+        );
+      }),
     );
   }
 }
