@@ -330,8 +330,13 @@ class Home extends State<ShowEpub> {
     );
   }
 
-  double getCurrentChapterPercent() =>
-      controller.offset / controller.position.maxScrollExtent;
+  double getCurrentChapterPercent() {
+    if (controller.position.maxScrollExtent == 0.0) {
+      return 1;
+    } else {
+      return controller.offset / controller.position.maxScrollExtent;
+    }
+  }
 
   void setBrightness(double brightness) async {
     await ScreenBrightness().setScreenBrightness(brightness);
