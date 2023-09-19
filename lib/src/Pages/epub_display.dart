@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:math';
 import 'dart:typed_data';
 
-import 'package:epubease/src/Component/back_button.dart';
+import 'package:epubease/src/Component/arrow_back_button.dart';
 import 'package:epubease/src/Model/last_place_model.dart';
 import 'package:epubease/src/Model/reader_result.dart';
 import 'package:epubease/src/core/utils/utils.dart';
