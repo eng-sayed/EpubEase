@@ -800,7 +800,7 @@ class Home extends State<ShowEpub> {
                         leading: IconButton(
                           onPressed: backpress,
                           icon: Icon(
-                            Icons.arrow_back_ios,
+                            Icons.arrow_back,
                             color: fontc,
                           ),
                         ),
