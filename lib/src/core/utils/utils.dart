@@ -10,7 +10,7 @@ double countLastProgress({
       WordsCounter().countWordsBefore(bookChapters, selectedChapter);
   final allResult = WordsCounter().countWordsBefore(bookChapters);
   final chapter =
-      bookChapters.firstWhere((element) => element.title == selectedChapter);
+      bookChapters.firstWhere((element) => element.index == selectedChapter);
 
   late final double currentChapterProgress;
   if (chapter.subChapters.isEmpty) {

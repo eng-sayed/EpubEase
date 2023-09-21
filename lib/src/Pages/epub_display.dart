@@ -174,7 +174,7 @@ class Home extends State<ShowEpub> {
   void updateChapterInList() {
     if (canProgressBeRead()) {
       final index = widget.realChapters
-          .indexWhere((element) => element.title == selectedChapter);
+          .indexWhere((element) => element.index == selectedChapter.index);
       final chapter = widget.realChapters[index];
       final chapterPercent = max(
         chapter.subChapters.isEmpty
@@ -232,8 +232,8 @@ class Home extends State<ShowEpub> {
   updatecontent1() async {
     htmlcontent = selectedChapter.content;
 
-    int index =
-        realChapters.indexWhere((element) => element.title == selectedChapter);
+    int index = realChapters
+        .indexWhere((element) => element.index == selectedChapter.index);
     setState(() {
       if (index == 0) {
         showprevious = false;
@@ -298,7 +298,7 @@ class Home extends State<ShowEpub> {
 
   LastPlaceModel getCurrentLastPlace() {
     final chapter = widget.realChapters
-        .firstWhere((element) => element.title == selectedChapter);
+        .firstWhere((element) => element.index == selectedChapter.index);
     return LastPlaceModel(
       chapterPercent: getCurrentChapterPercent(),
       chapterTitle: selectedChapter.title,
