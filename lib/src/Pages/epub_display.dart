@@ -65,7 +65,6 @@ class Home extends State<ShowEpub> {
   String docid = "";
   bool wasInit = true;
   Timer? timer;
-  bool canBeRead = false;
 
   String fontstyle = 'Montserrat-Medium'.toString();
 
@@ -83,10 +82,12 @@ class Home extends State<ShowEpub> {
   // Initialize with the first font in the list
   late String selectedTextStyle;
   late List<String> fontNames;
+  final wholeChapterDuration = Duration.zero;
 
   bool showheader = true;
   bool showprevious = false;
   bool shownext = false;
+  DateTime startTime = DateTime.now();
 
   @override
   void initState() {
@@ -171,7 +172,7 @@ class Home extends State<ShowEpub> {
       .sublist(chapter.index, chapter.index + chapter.subChapters.length);
 
   void updateChapterInList() {
-    if (canBeRead) {
+    if (canProgressBeRead()) {
       final index = widget.realChapters
           .indexWhere((element) => element.title == selectedchapter);
       final chapter = widget.realChapters[index];
@@ -196,13 +197,16 @@ class Home extends State<ShowEpub> {
     }
   }
 
+  bool canProgressBeRead() =>
+      DateTime.now().difference(startTime).inSeconds >
+      getCurrentChapterPercent() * wholeChapterDuration.inSeconds;
+
   void rerunTimer() {
-    canBeRead = false;
     timer?.cancel();
     final chapter = findBookChapter();
-    final duration = countReadDurationOfChapter(chapter);
-    timer = Timer(duration, () {
-      canBeRead = true;
+    final wholeChapterDuration = countReadDurationOfChapter(chapter);
+    startTime = DateTime.now();
+    timer = Timer(wholeChapterDuration, () {
       addDataToRepo();
       timer?.cancel();
     });
@@ -282,7 +286,8 @@ class Home extends State<ShowEpub> {
       bookChapters: realChapters,
       currentChapterPercent: currentChapterPercent,
     );
-    if (canBeRead) {
+
+    if (canProgressBeRead()) {
       return max(
         counted,
         widget.repository.lastReadResult.lastProgress,
