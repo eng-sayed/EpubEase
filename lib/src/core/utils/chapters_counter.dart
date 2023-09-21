@@ -56,6 +56,7 @@ class ChaptersCounter {
         subChapters: subSubChapters,
         index: 0,
         symbolsCount: wordsInChapter + wordsInParentChapter,
+        content: chapter.HtmlContent ?? "",
       ),
     );
     subChapters.addAll(subSubChapters);

@@ -7,6 +7,7 @@ class Chaptermodel {
   double percent;
   int index;
   int symbolsCount;
+  String content;
   Chaptermodel({
     required this.title,
     required this.index,
@@ -14,6 +15,7 @@ class Chaptermodel {
     required this.subChapters,
     required this.percent,
     required this.symbolsCount,
+    required this.content,
   });
   Chaptermodel copyWith({
     double? percent,
@@ -26,6 +28,7 @@ class Chaptermodel {
         index: index ?? this.index,
         symbolsCount: symbolsCount,
         percent: percent ?? this.percent,
+        content: content,
       );
 }
 

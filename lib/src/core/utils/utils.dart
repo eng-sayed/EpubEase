@@ -2,7 +2,7 @@ import 'package:epubease/src/Model/chapter_model.dart';
 import 'package:epubease/src/core/utils/words_counter.dart';
 
 double countLastProgress({
-  required String selectedChapter,
+  required int selectedChapter,
   required List<Chaptermodel> bookChapters,
   required double currentChapterPercent,
 }) {

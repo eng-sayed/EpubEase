@@ -16,30 +16,30 @@ class ChaptersList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        child: Scaffold(
-      backgroundColor: bag,
-      appBar: AppBar(
-        toolbarHeight: 40,
+      child: Scaffold(
         backgroundColor: bag,
-        leading: InkWell(
-            onTap: () {
-              Navigator.of(context).pop(false);
-            },
-            child: Icon(
-              Icons.close,
-              color: fontc,
-            )),
-        centerTitle: true,
-        title: const Text(
-          "Contents",
-          style:
-              TextStyle(fontWeight: FontWeight.bold, color: Color(0xffcc2b73)),
+        appBar: AppBar(
+          toolbarHeight: 40,
+          backgroundColor: bag,
+          leading: InkWell(
+              onTap: () {
+                Navigator.of(context).pop(false);
+              },
+              child: Icon(
+                Icons.close,
+                color: fontc,
+              )),
+          centerTitle: true,
+          title: const Text(
+            "Contents",
+            style: TextStyle(
+                fontWeight: FontWeight.bold, color: Color(0xffcc2b73)),
+          ),
         ),
-      ),
-      body: Container(
-        color: bag,
-        padding: const EdgeInsets.all(10),
-        child: ListView.builder(
+        body: Container(
+          color: bag,
+          padding: const EdgeInsets.all(10),
+          child: ListView.builder(
             itemCount: chapters.length,
             itemBuilder: (context, i) {
               return Column(
@@ -49,7 +49,7 @@ class ChaptersList extends StatelessWidget {
                   ListTile(
                     onTap: () {
                       beforeChapterChanged();
-                      selectedchapter = chapters[i].title;
+                      selectedChapter = chapters[i];
 
                       Navigator.of(context).pop(true);
                     },
@@ -58,7 +58,7 @@ class ChaptersList extends StatelessWidget {
                           left: chapters[i].issubchapter ? 15 : 0),
                       child: Text(chapters[i].title,
                           style: TextStyle(
-                              color: selectedchapter == chapters[i].title
+                              color: selectedChapter.index == chapters[i].index
                                   ? const Color(0xffcc2b73)
                                   : fontc,
                               fontFamily:
@@ -78,8 +78,10 @@ class ChaptersList extends StatelessWidget {
                   const Divider(height: 0, thickness: 1.0),
                 ],
               );
-            }),
+            },
+          ),
+        ),
       ),
-    ));
+    );
   }
 }

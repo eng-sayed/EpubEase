@@ -9,9 +9,9 @@ class WordsCounter {
   WordsCounter();
 
   CountWordsResult countWordsBefore(List<Chaptermodel> chapters,
-      [String? selectedchapter]) {
+      [int? selectedchapter]) {
     final index = selectedchapter != null
-        ? chapters.indexWhere((element) => element.title == selectedchapter)
+        ? chapters.indexWhere((element) => element.index == selectedchapter)
         : chapters.length;
     var count = 0;
     for (int i = 0; i < index; i++) {
