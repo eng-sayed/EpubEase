@@ -45,7 +45,7 @@ Duration countReadDurationOfChapter(Chaptermodel chapter) {
   const symbolsPerSecond = 25;
   final normalReadSeconds = symbolsInChapter / symbolsPerSecond;
   const coef = 0.1;
-  final coefReadSeconds = normalReadSeconds * coef;
+  final coefReadSeconds = normalReadSeconds * coef * (1 - chapter.percent);
   final coedReadMilliseconds = coefReadSeconds * 1000;
   return Duration(milliseconds: coedReadMilliseconds.round());
 }
