@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:math';
-import 'dart:typed_data';
 
 import 'package:epubease/src/Component/arrow_back_button.dart';
 import 'package:epubease/src/Model/last_place_model.dart';
@@ -11,12 +10,12 @@ import 'package:epubx/epubx.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/material.dart';
 import 'package:screen_brightness/screen_brightness.dart';
-import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
+
 import 'package:google_fonts/google_fonts.dart';
 
-import '../Component/html_image.dart';
 import '../Component/theme.dart';
 import 'content.dart';
+import 'package:flutter_html/flutter_html.dart';
 import '../Model/chapter_model.dart';
 
 late String selectedFont;
@@ -33,7 +32,7 @@ class ShowEpub extends StatefulWidget {
   List splithtml = [];
   final LastPlaceModel? lastPlace;
   final List<Chaptermodel> realChapters;
-  final htmlKey = GlobalKey<HtmlWidgetState>();
+
   final Repository repository;
 
   ShowEpub({
@@ -569,9 +568,9 @@ class Home extends State<ShowEpub> {
                                     child: SelectionArea(
                                       onSelectionChanged: (value) =>
                                           print(value),
-                                      child: HtmlWidget(
-                                        htmlcontent,
-                                        key: widget.htmlKey,
+                                      child: Html(
+                                        data: htmlcontent,
+                                        /*
                                         buildAsync: true,
                                         renderMode: ListViewMode(
                                             controller: controller),
@@ -584,7 +583,7 @@ class Home extends State<ShowEpub> {
                                         textStyle: TextStyle(
                                             fontSize: _fontsize,
                                             fontFamily: selectedTextStyle,
-                                            color: fontc),
+                                            color: fontc), */
                                       ),
                                     )),
                               ),
@@ -840,7 +839,7 @@ class Home extends State<ShowEpub> {
 }
 
 // ignore: must_be_immutable
-
+/*
 class _CustomWidgetFactory extends WidgetFactory {
   final EpubBook book;
 
@@ -875,4 +874,4 @@ class _CustomWidgetFactory extends WidgetFactory {
 
     return null;
   }
-}
+} */
