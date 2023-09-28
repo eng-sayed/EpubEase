@@ -53,7 +53,7 @@ class Epubease {
 
         WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
           final result = await pushReader(Scaffold(
-            body: Html(data: htmlcontent),
+            body: SingleChildScrollView(child: Html(data: htmlcontent)),
           )
               /*  ShowEpub(
               html1: htmlcontent,
