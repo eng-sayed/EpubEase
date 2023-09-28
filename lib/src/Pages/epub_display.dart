@@ -568,22 +568,25 @@ class Home extends State<ShowEpub> {
                                     child: SelectionArea(
                                       onSelectionChanged: (value) =>
                                           print(value),
-                                      child: Html(
-                                        data: htmlcontent,
-                                        /*
-                                        buildAsync: true,
-                                        renderMode: ListViewMode(
-                                            controller: controller),
-                                        factoryBuilder: () =>
-                                            _CustomWidgetFactory(
-                                                book: widget.epubBook),
-                                        onTapUrl: (String? s) async {
-                                          return true;
-                                        },
-                                        textStyle: TextStyle(
-                                            fontSize: _fontsize,
-                                            fontFamily: selectedTextStyle,
-                                            color: fontc), */
+                                      child: SingleChildScrollView(
+                                        controller: controller,
+                                        child: Html(
+                                          data: htmlcontent,
+                                          /*
+                                          buildAsync: true,
+                                          renderMode: ListViewMode(
+                                              controller: controller),
+                                          factoryBuilder: () =>
+                                              _CustomWidgetFactory(
+                                                  book: widget.epubBook),
+                                          onTapUrl: (String? s) async {
+                                            return true;
+                                          },
+                                          textStyle: TextStyle(
+                                              fontSize: _fontsize,
+                                              fontFamily: selectedTextStyle,
+                                              color: fontc), */
+                                        ),
                                       ),
                                     )),
                               ),
