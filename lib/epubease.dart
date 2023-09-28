@@ -10,9 +10,8 @@ import 'package:epubease/src/core/utils/chapters_counter.dart';
 import 'package:epubease/src/data/repository.dart';
 import 'package:epubx/epubx.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:http/http.dart' as http;
-
-import 'epubease.dart';
 
 export 'src/Pages/epub_display.dart';
 
@@ -53,15 +52,17 @@ class Epubease {
         final repository = Repository(onSave: onSave, lastReadResult: result);
 
         WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-          final result = await pushReader(
-            ShowEpub(
+          final result = await pushReader(Scaffold(
+            body: Html(data: htmlcontent),
+          )
+              /*  ShowEpub(
               html1: htmlcontent,
               epubBook: epubBook,
               lastPlace: realLastPlace,
               repository: repository,
               realChapters: chaptersPercentages,
-            ),
-          );
+            ), */
+              );
           onClose(result);
         });
       } else {
